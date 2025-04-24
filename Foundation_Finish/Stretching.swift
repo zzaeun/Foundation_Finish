@@ -9,6 +9,11 @@ struct StretchingView: View {
     @State private var elapsedTime: TimeInterval = 0
     private let totalTime: TimeInterval = 124
     
+    @State private var scene: SCNScene = SCNScene()
+    @State private var cameraNode: SCNNode = SCNNode()
+    @State private var modelNode: SCNNode? = nil
+    @State private var isPaused = false
+    
     private var timerString: String {
         let remaining = totalTime - elapsedTime
         let minutes = Int(remaining) / 60
@@ -34,21 +39,17 @@ struct StretchingView: View {
                 .padding(.vertical,8)
                 
                 SceneView(
-                    scene: {
-                        let scene = SCNScene()
-                        if let url = Bundle.main.url(forResource: "3d_Rabbit_Stretching", withExtension: "usdz"),
-                           let node = try? SCNScene(url: url, options: nil).rootNode.clone() {
-                            node.position = SCNVector3(0, 0, 0)
-                            node.scale = SCNVector3(10, 10, 10)
-                            scene.rootNode.addChildNode(node)
-                        }
-                        return scene
-                    }(),
-                    options: [.autoenablesDefaultLighting, .allowsCameraControl]
+                    scene: scene,
+                    pointOfView: cameraNode,
+                    options: [.autoenablesDefaultLighting]
                 )
                 .frame(height: 450)
                 .background(Color.white)
                 .padding(.horizontal)
+                .onAppear {
+                    setupScene()
+                    loadModel()
+                }
                 
                 HStack {
                     Button(action: { isPlaying.toggle() }) {
@@ -109,6 +110,63 @@ struct StretchingView: View {
                 Spacer()
             }
             .navigationBarTitle("척추의 길", displayMode: .inline)
+        }
+    }
+    
+    private func setupScene() {
+        scene.background.contents = UIColor.white
+
+        let camera = SCNCamera()
+        camera.fieldOfView = 60
+        camera.zNear = 0.1
+        camera.zFar = 100
+        cameraNode.camera = camera
+        cameraNode.position = SCNVector3(0, 0.5, 1.3)
+        scene.rootNode.addChildNode(cameraNode)
+
+        let ambientLight = SCNNode()
+        ambientLight.light = SCNLight()
+        ambientLight.light?.type = .ambient
+        ambientLight.light?.intensity = 100
+        ambientLight.light?.color = UIColor.white
+        scene.rootNode.addChildNode(ambientLight)
+
+        let directionalLight = SCNNode()
+        directionalLight.light = SCNLight()
+        directionalLight.light?.type = .directional
+        directionalLight.light?.intensity = 800
+        directionalLight.light?.color = UIColor.white
+        directionalLight.position = SCNVector3(0, 10, 10)
+        directionalLight.eulerAngles = SCNVector3(-0.5, 0.5, 0)
+        scene.rootNode.addChildNode(directionalLight)
+    }
+
+    private func loadModel() {
+        if let modelURL = Bundle.main.url(forResource: "3d_Rabbit_Stretching", withExtension: "usdz") {
+            do {
+                let modelScene = try SCNScene(url: modelURL, options: nil)
+                guard let modelNode = modelScene.rootNode.childNodes.first else { return }
+
+                modelNode.position = SCNVector3(0, 0, 0)
+                modelNode.scale = SCNVector3(0.6, 0.6, 0.6)
+                modelNode.eulerAngles = SCNVector3(-1.5, 0, 0)
+                self.modelNode = modelNode
+                scene.rootNode.addChildNode(modelNode)
+
+                let sceneSource = SCNSceneSource(url: modelURL, options: nil)!
+                let animationKeys = sceneSource.identifiersOfEntries(withClass: CAAnimation.self)
+                for key in animationKeys {
+                    if let animation = sceneSource.entryWithIdentifier(key, withClass: CAAnimation.self) {
+                        animation.repeatCount = .infinity
+                        animation.isRemovedOnCompletion = false
+                        animation.fillMode = .forwards
+                        modelNode.addAnimation(animation, forKey: key)
+                    }
+                }
+
+            } catch {
+                print("Model load error: \(error)")
+            }
         }
     }
 }
