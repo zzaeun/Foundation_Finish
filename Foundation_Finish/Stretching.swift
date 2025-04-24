@@ -20,7 +20,7 @@ struct StretchingView: View {
         let seconds = Int(remaining) % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
-    
+     
     private var progress: Double {
         guard totalTime > 0 else { return 0 }
         return elapsedTime / totalTime
@@ -41,7 +41,7 @@ struct StretchingView: View {
                 SceneView(
                     scene: scene,
                     pointOfView: cameraNode,
-                    options: [.autoenablesDefaultLighting]
+                    options: [.autoenablesDefaultLighting, .allowsCameraControl]
                 )
                 .frame(height: 450)
                 .background(Color.white)
@@ -150,6 +150,7 @@ struct StretchingView: View {
                 modelNode.position = SCNVector3(0, 0, 0)
                 modelNode.scale = SCNVector3(0.6, 0.6, 0.6)
                 modelNode.eulerAngles = SCNVector3(-1.5, 0, 0)
+                modelNode.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0)
                 self.modelNode = modelNode
                 scene.rootNode.addChildNode(modelNode)
 
