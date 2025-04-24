@@ -1,0 +1,56 @@
+{
+    "days": {
+        "day1": {
+            "messages": [
+                {
+                  "text": "하아... 오늘도 야근인가.",
+                  "image": "emoji_busy"
+                },
+                {
+                  "text": "보고서가 왜 이렇게 많은 거야...",
+                  "image": "emoji_busy"
+                },
+                {
+                  "text": "허리가 끊어질 것 같아...",
+                  "image": "emoji_sad"
+                },
+                {
+                  "text": "그래도... 다행이다. 오늘은 평소보다 일찍 끝났네?",
+                  "image": "emoji_smile"
+                }
+            ],
+            "initialPosition": {
+                "x": -0.1312,
+                "y": 0.2,
+                "z": -4
+            },
+            "initialRotation": {
+                "x": -1.57,
+                "y": -3.15,
+                "z": 0.0
+            }
+        },
+        "day2": {
+            "messages": [
+                {
+                    "text": "오늘은 새로운 모험이 시작됩니다!",
+                    "image": "emoji_computering"
+                },
+                {
+                    "text": "숲 속에 있는 보물을 찾아주세요.",
+                    "image": "emoji_smile"
+                }
+            ],
+            "initialPosition": {
+                "x": -0.42,
+                "y": 0,
+                "z": -0.12
+            },
+            "initialRotation": {
+                "x": -1.57,
+                "y": -2.9,
+                "z": 0.0
+            }
+        }
+    }
+} 
