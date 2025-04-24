@@ -99,7 +99,7 @@ struct Home: View {
                 .padding(.bottom)
             }
             // Header
-            .navigationBarTitleDisplayMode(.inline)
+//            .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 HStack {
                     Image("아이콘_배경x")
