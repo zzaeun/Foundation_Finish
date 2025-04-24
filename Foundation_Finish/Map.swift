@@ -691,27 +691,23 @@ class GameController: ObservableObject {
         }
     }
     
-    // 카메라 X축 회전 함수 추가
-    func rotateCameraX(up: Bool) {
-        guard let camera = cameraNode, !isAnimating else { return }
+    // 카메라 Z축 이동 함수로 변경
+    func moveCameraZ(angle: Float) {
+        guard let camera = cameraNode, let player = playerNode, !isAnimating else { return }
         isAnimating = true
         
-        // 회전 속도 제한 추가
-        let maxRotationSpeed: Float = 0.05
-        let actualRotationSpeed = min(rotationSpeed, maxRotationSpeed)
+        // 이동 속도 감소
+        let moveSpeed: Float = 0.5  // 2.0에서 0.5로 감소
         
-        // 위로 회전하면 피치 각도 감소, 아래로 회전하면 피치 각도 증가
-        let newPitch = up ? cameraPitch - actualRotationSpeed : cameraPitch + actualRotationSpeed
+        // 현재 카메라 위치
+        let currentPosition = camera.position
         
-        // 피치 각도 제한 (너무 위나 아래로 보지 않도록)
-        let minPitch: Float = -Float.pi/2 + 0.1  // 거의 정면을 보지 않도록 제한
-        let maxPitch: Float = -0.1  // 거의 정면을 보지 않도록 제한
-        let clampedPitch = min(max(newPitch, minPitch), maxPitch)
+        // 새로운 카메라 위치 계산 (Z축 방향으로만 이동)
+        let newX = currentPosition.x
+        let newZ = currentPosition.z + moveSpeed * angle
         
-        updateCameraAngles(pitch: clampedPitch)
-    
-    // 카메라 위치 업데이트
-        updateCameraPosition()
+        // 카메라 위치만 업데이트 (높이는 고정)
+        camera.position = SCNVector3(newX, currentPosition.y, newZ)
         
         // 애니메이션 완료 후 상태 업데이트
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -1178,22 +1174,20 @@ struct GameView: View {
     @State private var currentDay: Int = 1
     @State private var currentMessageIndex: Int = 0
     @State private var messages: [Message] = []
-    @State private var currentImage: String = "emoji_computering"  // 초기 이미지 경로 수정
+    @State private var currentImage: String = "emoji_computering"
     @State private var showStretchingView: Bool = false
     @State private var GoshowStretchingView: Bool = false
-    
-    // 타이머 관리를 위한 변수 추가
     @State private var moveTimer: Timer? = nil
     @State private var isButtonPressed = false
-    
-    // 모델 변경 버튼 상태 추가
     @State private var isBacktouchModel: Bool = false
+    @State private var lastDragValue: CGFloat = 0
+    @State private var isDragging: Bool = false
     
     init() {
         let controller = GameController(currentDay: 1)  // currentDay 전달
         self.gameController = controller
         self.sceneDelegate = SceneViewDelegate(gameController: controller)
-        self.currentImage = "emoji_computering"  // 초기 이미지 경로 수정
+        self.currentImage = "emoji_computering"
     }
     
     // 타이머 정리 함수
@@ -1227,65 +1221,66 @@ struct GameView: View {
                 // 3D Scene
                 GeometryReader { geometry in
                     ZStack {
-                    SceneView(
-                        scene: gameController.scene,
-                        options: [.autoenablesDefaultLighting],
-                        delegate: sceneDelegate
-                    )
-                    .focusable()
-                
-                // 좌표 표시
-    //                    VStack {
-    //                        HStack {
-    //                            Spacer()
-    //                            Text("X: \(String(format: "%.2f", gameController.playerPosition.x))")
-    //                                .font(.system(size: 14, weight: .bold))
-    //                                .foregroundColor(.white)
-    //                                .padding(8)
-    //                                .background(Color.black.opacity(0.5))
-    //                                .cornerRadius(8)
-    //                            Text("Y: \(String(format: "%.2f", gameController.playerPosition.y))")
-    //                                .font(.system(size: 14, weight: .bold))
-    //                                .foregroundColor(.white)
-    //                                .padding(8)
-    //                                .background(Color.black.opacity(0.5))
-    //                                .cornerRadius(8)
-    //                            Text("Z: \(String(format: "%.2f", gameController.playerPosition.z))")
-    //                                .font(.system(size: 14, weight: .bold))
-    //                                .foregroundColor(.white)
-    //                                .padding(8)
-    //                                .background(Color.black.opacity(0.5))
-    //                                .cornerRadius(8)
-    //                        }
-    //                        .padding(.horizontal)
-    //                        .padding(.top, 30)
-    //
-    //                        // 회전값 표시
-    //                        HStack {
-    //                            Spacer()
-    //                            Text("Rot X: \(String(format: "%.2f", gameController.playerRotation.x))")
-    //                                .font(.system(size: 14, weight: .bold))
-    //                                .foregroundColor(.white)
-    //                                .padding(8)
-    //                                .background(Color.black.opacity(0.5))
-    //                                .cornerRadius(8)
-    //                            Text("Rot Y: \(String(format: "%.2f", gameController.playerRotation.y))")
-    //                                .font(.system(size: 14, weight: .bold))
-    //                                .foregroundColor(.white)
-    //                                .padding(8)
-    //                                .background(Color.black.opacity(0.5))
-    //                                .cornerRadius(8)
-    //                            Text("Rot Z: \(String(format: "%.2f", gameController.playerRotation.z))")
-    //                                .font(.system(size: 14, weight: .bold))
-    //                                .foregroundColor(.white)
-    //                                .padding(8)
-    //                                .background(Color.black.opacity(0.5))
-    //                                .cornerRadius(8)
-    //                        }
-    //                        .padding(.horizontal)
-    //
-    //                        Spacer()
-    //                    }
+                        SceneView(
+                            scene: gameController.scene,
+                            options: [.autoenablesDefaultLighting],
+                            delegate: sceneDelegate
+                        )
+                        .focusable()
+                        .simultaneousGesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    let delta = value.translation.height - lastDragValue
+                                    gameController.moveCameraZ(angle: Float(delta) * 0.1)  // 0.2에서 0.1로 감소
+                                    lastDragValue = value.translation.height
+                                }
+                                .onEnded { _ in
+                                    lastDragValue = 0
+                                }
+                        )
+                        
+                        // 카메라 위치 표시
+                        VStack {
+                            HStack {
+                                Spacer()
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    Text("Camera Position")
+                                        .font(.system(size: 14, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(Color.black.opacity(0.5))
+                                        .cornerRadius(8)
+                                    
+                                    Text("X: \(String(format: "%.2f", gameController.cameraNode?.position.x ?? 0))")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(Color.black.opacity(0.5))
+                                        .cornerRadius(8)
+                                    
+                                    Text("Y: \(String(format: "%.2f", gameController.cameraNode?.position.y ?? 0))")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(Color.black.opacity(0.5))
+                                        .cornerRadius(8)
+                                    
+                                    Text("Z: \(String(format: "%.2f", gameController.cameraNode?.position.z ?? 0))")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(Color.black.opacity(0.5))
+                                        .cornerRadius(8)
+                                }
+                                .padding(.top, 30)
+                                .padding(.trailing, 16)
+                            }
+                            Spacer()
+                        }
                     }
                 }
                 .frame(height: UIScreen.main.bounds.height * 0.795)
@@ -1337,9 +1332,6 @@ struct GameView: View {
                 // 화면이 사라질 때 타이머 정리
                 stopMoveTimer()
             }
-//            .navigationDestination(isPresented: $showStretchingView) {
-//                Stretching()
-//            }
         }
     }
     

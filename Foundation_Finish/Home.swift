@@ -29,49 +29,50 @@ struct Home: View {
                 }
                 .padding()
                 
-                // 오늘의 챌린지
-                VStack(alignment: .leading) {
-                    Text("오늘의 챌린지")
-                        .bold()
-                        .font(.title2)
-                        .padding(.leading)
-                    
-                    // 챌린지 카드
-                    VStack(spacing: 0) {
-                        Image("척추의길")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 160)
-                            .clipped()
+                NavigationLink(destination: GameView()) {
+                    // 오늘의 챌린지
+                    VStack(alignment: .leading) {
+                        Text("오늘의 챌린지")
+                            .bold()
+                            .font(.title2)
+                            .padding(.leading)
                         
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("척추의 길")
-                                .font(.headline)
-                            Text("26개 척추뼈와 함께하는 26일 습관형성")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                        // 챌린지 카드
+                        VStack(spacing: 0) {
+                            Image("척추의길")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(height: 160)
+                                .clipped()
                             
-                            // 퍼센트 바
-                            ZStack(alignment: .leading) {
-                                Capsule()
-                                    .frame(height: 6)
-                                    .foregroundColor(Color.gray.opacity(0.3))
-                                Capsule()
-                                    .frame(width: 300 * progress, height: 6)
-                                    .foregroundColor(.black)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("척추의 길")
+                                    .font(.headline)
+                                Text("26개 척추뼈와 함께하는 26일 습관형성")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                
+                                // 퍼센트 바
+                                ZStack(alignment: .leading) {
+                                    Capsule()
+                                        .frame(height: 6)
+                                        .foregroundColor(Color.gray.opacity(0.3))
+                                    Capsule()
+                                        .frame(width: 300 * progress, height: 6)
+                                        .foregroundColor(.black)
+                                }
+                                .padding(.top, 4)
                             }
-                            .padding(.top, 4)
+                            .padding()
                         }
-                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(15)
+                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        .frame(width: 370) // width를 명시하여 가운데 정렬 용이하게 함
+                        .padding(.horizontal) // 좌우 여백 추가
                     }
-                    .background(Color.white)
-                    .cornerRadius(15)
-                    .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-                    .frame(width: 370) // width를 명시하여 가운데 정렬 용이하게 함
-                    .padding(.horizontal) // 좌우 여백 추가
+                    .padding(.bottom)
                 }
-                .padding(.bottom)
-                
                 // Stretching Section
                 VStack(alignment: .leading) {
                     Text("스트레칭")
