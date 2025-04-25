@@ -18,6 +18,17 @@ struct StretchingView: View {
     
     @State private var rotationAngleX: Float = 0.0
     
+    @State private var showSwipeHint = true
+    @State private var swipeHintOffset: CGFloat = 0
+    
+    private let instructions: [[String]] = [
+        ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."],
+        ["어깨를 천천히 위로 올렸다가 내리세요.", "양팔을 뒤로 쭉 펴세요.", "깊게 숨을 쉬면서 10초간 유지하세요."],
+        ["허리를 곧게 펴고, 상체를 천천히 앞으로 숙이세요.", "손끝이 발끝을 향하도록 하세요.", "등과 허리 뒤쪽이 당기는 느낌에 집중하세요."],
+        ["무릎을 굽혔다 폈다 반복하세요.", "한쪽 무릎을 당겨서 가슴 쪽으로 끌어올리세요.", "10초간 유지한 후 반대쪽도 반복하세요."]
+    ]
+        
+    
     private var timerString: String {
         let remaining = totalTime - elapsedTime
         let minutes = Int(remaining) / 60
@@ -63,13 +74,8 @@ struct StretchingView: View {
                 .padding(.horizontal)
                 .padding(.vertical,8)
                 .onChange(of: selectedSegment) { newValue in
-                    switch newValue {
-                    case 0: elapsedTime = 0
-                    case 1: elapsedTime = 30
-                    case 2: elapsedTime = 60
-                    case 3: elapsedTime = 90
-                    default: break
-                    }
+                    elapsedTime = Double(newValue) * 30
+                    loadModel()
                 }
                 
                 SceneView(
@@ -92,6 +98,36 @@ struct StretchingView: View {
                             rotationAngleX += delta
                             modelNode?.eulerAngles = SCNVector3(-1.5, rotationAngleX, 0)
                         }
+                )
+                .overlay(
+                    Group {
+                        if showSwipeHint {
+                            VStack {
+                                HStack {
+                                    Spacer().frame(width: 105)
+                                    Image(systemName: "hand.draw.fill")
+                                        .font(.title)
+                                        .foregroundColor(.gray)
+                                        .padding()
+                                        .offset(x: swipeHintOffset)
+                                        .opacity(1 - Double(swipeHintOffset / 200))
+                                        .animation(.easeOut(duration: 2.0).delay(1.0), value: swipeHintOffset)
+                                    Spacer()
+                                }
+                                Spacer()
+                            }
+                            .padding(.top, 20)
+                            .onAppear {
+                                swipeHintOffset = 0
+                                withAnimation(.easeOut(duration: 2.0).delay(1.0)) {
+                                    swipeHintOffset = 200
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                                    showSwipeHint = false
+                                }
+                            }
+                        }
+                    }
                 )
                 
                 HStack {
@@ -125,30 +161,19 @@ struct StretchingView: View {
                 ProgressView(value: progress)
                     .padding(.horizontal)
                 
-                VStack(alignment: .leading, spacing: 20) {
-                    HStack(alignment: .center, spacing: 8) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.blue)
-                        Text("의자에 똑바로 앉아주세요.")
-                            .font(.caption)
-                            .fontWeight(.regular)
-                    }
-                    HStack(alignment: .center, spacing: 8) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.blue)
-                        Text("오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.")
-                            .font(.caption)
-                            .fontWeight(.regular)
-                    }
-                    HStack(alignment: .center, spacing: 8) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.blue)
-                        Text("목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다.")
-                            .font(.caption)
-                            .fontWeight(.regular)
+                VStack(alignment:.leading, spacing: 20) {
+                    ForEach(instructions[selectedSegment], id: \.self) { line in
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.blue)
+                            Text(line)
+                                .font(.caption)
+                                .fontWeight(.regular)
+                            Spacer()
+                        }
                     }
                 }
-                .padding(.horizontal)
+                .padding()
                 
                 Spacer()
             }
@@ -185,10 +210,14 @@ struct StretchingView: View {
     }
 
     private func loadModel() {
-        if let modelURL = Bundle.main.url(forResource: "3d_Rabbit_Stretching", withExtension: "usdz") {
+        let modelNames = ["3d_Rabbit_Stretching", "3d_Shoulder", "3d_Back", "3d_Knee"]
+        let selectedModel = modelNames[selectedSegment]
+        if let modelURL = Bundle.main.url(forResource: selectedModel, withExtension: "usdz") {
             do {
                 let modelScene = try SCNScene(url: modelURL, options: nil)
                 guard let modelNode = modelScene.rootNode.childNodes.first else { return }
+                
+                self.modelNode?.removeFromParentNode()
 
                 modelNode.position = SCNVector3(0, 0, 0)
                 modelNode.scale = SCNVector3(0.6, 0.6, 0.6)
