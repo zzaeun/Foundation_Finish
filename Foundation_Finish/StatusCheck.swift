@@ -39,7 +39,8 @@ struct StatusCheck: View {
                     }) {
                         Text("저장")
                             .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
+//                            .frame(maxWidth: .infinity)
+                            .frame(width: 100)
                             .padding()
                             .background(Color.blue)
                             .cornerRadius(20)
@@ -82,7 +83,7 @@ struct CustomPickerView: View {
             } label: {
                 HStack {
                     Text(selection.isEmpty ? "선택해주세요" : selection)
-                        .foregroundColor(selection.isEmpty ? .gray : .primary)
+                        .foregroundColor(selection.isEmpty ? Color(UIColor.placeholderText) : .primary)
                         .font(.system(size: 15))
                     Spacer()
                     Image(systemName: "chevron.down")
