@@ -7,12 +7,16 @@ struct StretchingView: View {
     
     @State private var isPlaying = false
     @State private var elapsedTime: TimeInterval = 0
-    private let totalTime: TimeInterval = 124
+    private let totalTime: TimeInterval = 120
     
+    @State private var timer: Timer? = nil
+
     @State private var scene: SCNScene = SCNScene()
     @State private var cameraNode: SCNNode = SCNNode()
     @State private var modelNode: SCNNode? = nil
     @State private var isPaused = false
+    
+    @State private var rotationAngleX: Float = 0.0
     
     private var timerString: String {
         let remaining = totalTime - elapsedTime
@@ -26,6 +30,27 @@ struct StretchingView: View {
         return elapsedTime / totalTime
     }
     
+    private func startTimer() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if elapsedTime < totalTime {
+                elapsedTime += 1
+                switch elapsedTime {
+                case 30:
+                    selectedSegment = 1
+                case 60:
+                    selectedSegment = 2
+                case 90:
+                    selectedSegment = 3
+                default:
+                    break
+                }
+            } else {
+                timer?.invalidate()
+            }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 16) {
@@ -37,11 +62,20 @@ struct StretchingView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding(.horizontal)
                 .padding(.vertical,8)
+                .onChange(of: selectedSegment) { newValue in
+                    switch newValue {
+                    case 0: elapsedTime = 0
+                    case 1: elapsedTime = 30
+                    case 2: elapsedTime = 60
+                    case 3: elapsedTime = 90
+                    default: break
+                    }
+                }
                 
                 SceneView(
                     scene: scene,
                     pointOfView: cameraNode,
-                    options: [.autoenablesDefaultLighting, .allowsCameraControl]
+                    options: [.autoenablesDefaultLighting]
                 )
                 .frame(height: 450)
                 .background(Color.white)
@@ -49,7 +83,16 @@ struct StretchingView: View {
                 .onAppear {
                     setupScene()
                     loadModel()
+                    startTimer()
                 }
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            let delta = Float(value.translation.width) * 0.0008
+                            rotationAngleX += delta
+                            modelNode?.eulerAngles = SCNVector3(-1.5, rotationAngleX, 0)
+                        }
+                )
                 
                 HStack {
                     Button(action: { isPlaying.toggle() }) {
