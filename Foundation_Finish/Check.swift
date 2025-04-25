@@ -8,23 +8,21 @@ struct Check: View {
     @State private var showPainSurvey = false
     @State private var sex: String = ""
     @State private var job: String = ""
-
+    
     let sexRanges = ["남자", "여자"]
     let jobRanges = ["학생", "직장인", "프리랜서", "자영업자", "주부", "기타"]
-
-    @Environment(\.presentationMode) var presentationMode
-
+    
     var formattedBirthdate: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 MM월 dd일"
         return formatter.string(from: birthdate)
     }
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.white.ignoresSafeArea()
-
+                
                 VStack {
                     HStack {
                         Text("자가 진단")
@@ -32,18 +30,19 @@ struct Check: View {
                             .bold()
                     }
                     .padding(.horizontal)
-
+                    
                     Divider()
-
+                    
                     Form {
                         // 닉네임 입력
                         // 닉네임 입력
                         Section {
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("닉네임")
-                                    .font(.system(size: 16, weight: .semibold))
+                                    .font(.system(size: 19, weight: .semibold))
                                     .foregroundColor(.gray)
-
+                                    .bold()
+                                
                                 HStack {
                                     TextField("닉네임을 입력하세요", text: $nickname)
                                         .font(.system(size: 15))
@@ -60,15 +59,15 @@ struct Check: View {
                                 )
                             }
                         }
-
-
+                        
+                        
                         // 생년월일 버튼
                         Section {
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("생년월일")
-                                    .font(.system(size: 16, weight: .semibold))
+                                    .font(.system(size: 19, weight: .semibold))
                                     .foregroundColor(.gray)
-
+                                
                                 Button(action: {
                                     showDatePicker = true
                                 }) {
@@ -93,7 +92,7 @@ struct Check: View {
                                 }
                             }
                         }
-
+                        
                         // 성별, 직업 선택
                         Section {
                             CustomPickerView(title: "성별", selection: $sex, options: sexRanges)
@@ -101,25 +100,30 @@ struct Check: View {
                         Section {
                             CustomPickerView(title: "직업", selection: $job, options: jobRanges)
                         }
-                        .padding(.bottom, 120)
+//                        .padding(.bottom, 5)
                     }
                     .scrollContentBackground(.hidden)
                     .background(Color.white)
-
-                    // 다음 버튼
+//                    .offset(y: -40)
+                    
+                    // 저장 버튼
                     Button(action: {
                         showPainSurvey = true
                     }) {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.black)
-                            .frame(width: 80, height: 35)
-                            .overlay(
-                                Text("다음")
-                                    .foregroundColor(.white)
-                            )
+                        Text("다음")
+                            .bold()
+                            .foregroundColor(.white)
+                        //                            .frame(maxWidth: .infinity)
+                            .frame(width: 300, height: 20)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .shadow(radius: 2)
                     }
-                    .padding(.bottom)
-
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 20)
+                    
+                    
                     NavigationLink("", destination: PainSurvey(), isActive: $showPainSurvey)
                         .hidden()
                 }
@@ -132,7 +136,7 @@ struct Check: View {
                         .labelsHidden()
                         .environment(\.locale, .init(identifier: "ko_KR"))
                         .padding()
-
+                    
                     Button("선택 완료") {
                         isBirthdateSelected = true
                         showDatePicker = false
@@ -142,22 +146,9 @@ struct Check: View {
                 }
                 .presentationDetents([.height(300)])
             }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
-                            .bold()
-                    }
-                }
-            }
         }
     }
 }
-
 #Preview {
     Check()
 }

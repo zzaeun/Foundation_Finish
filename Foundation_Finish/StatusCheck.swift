@@ -11,15 +11,25 @@ struct StatusCheck: View {
     let timeRanges = ["4시간 이하", "4-6시간", "6-8시간", "8-10시간", "10시간 이상"]
     let frequencyRanges = ["거의 하지 않음", "주 1-2회", "주 3-4회", "주 5회 이상"]
     
+    @Environment(\.presentationMode) var presentationMode
+
+
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 24) {
+                    Text("자가진단")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .offset(y: -35)
+                    Divider()
+                        .offset(y: -40)
+                    
                     Text("나의 생활 습관 알아보기")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .padding(.top)
-                        .padding(.trailing, 150)
+                        .padding(.top, -70)
+                        .padding(.trailing, 130)
                         .offset(y: 35)
                     
                     SurveySection(title: "") {
@@ -32,23 +42,24 @@ struct StatusCheck: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 12)
+                    .offset(y: -50)
                     
                     // 저장 버튼
                     Button(action: {
                         showHome = true
                     }) {
                         Text("저장")
+                            .bold()
                             .foregroundColor(.white)
 //                            .frame(maxWidth: .infinity)
-                            .frame(width: 100)
+                            .frame(width: 312, height: 20)
                             .padding()
                             .background(Color.blue)
-                            .cornerRadius(20)
+                            .cornerRadius(10)
                             .shadow(radius: 2)
                     }
                     .padding(.horizontal, 12)
-                    .padding(.top, 10)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 20)
                 }
                 
                 NavigationLink("", destination: Home(), isActive: $showHome)
@@ -57,6 +68,18 @@ struct StatusCheck: View {
                         Home()
                     }
 
+            }
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                            .bold()
+                    }
+                }
             }
         }
     }
@@ -68,9 +91,9 @@ struct CustomPickerView: View {
     var options: [String]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) { // 질문-다음 질문 사이 공백 추가
+        VStack(alignment: .leading, spacing: 20) { // 질문-다음 질문 사이 공백 추가
             Text(title)
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: 19, weight: .semibold))
                 .foregroundColor(Color(red: 136/255, green: 135/255, blue: 136/255))
             
 
@@ -85,6 +108,7 @@ struct CustomPickerView: View {
                     Text(selection.isEmpty ? "선택해주세요" : selection)
                         .foregroundColor(selection.isEmpty ? Color(UIColor.placeholderText) : .primary)
                         .font(.system(size: 15))
+                    
                     Spacer()
                     Image(systemName: "chevron.down")
                         .foregroundColor(.gray)
@@ -99,6 +123,7 @@ struct CustomPickerView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(Color.gray.opacity(0.4), lineWidth: 1)
                 )
+                .padding(.bottom)
             }
         }
     }
@@ -106,6 +131,7 @@ struct CustomPickerView: View {
 
 
 // MARK: - Section Container
+// 설문 섹션 컴포넌트
 struct SurveySection<Content: View>: View {
     let title: String
     let content: Content
@@ -116,16 +142,16 @@ struct SurveySection<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 15) {
             Text(title)
                 .font(.headline)
-
+                .padding(.bottom, 5)
 
             content
         }
-        .padding(20) // 박스 내부 여백 넉넉하게
-//        .background(Color(UIColor.systemGray6))
-        .cornerRadius(16)
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(10)
     }
 }
 

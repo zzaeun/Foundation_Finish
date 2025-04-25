@@ -13,7 +13,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if isActive {
-                Home()
+                Check()
             }
             else {
                 SplashScreen()          // isActive를 false로 설정했으니까 앱 실행하면 SplashScreen 등장
