@@ -35,13 +35,13 @@ struct Check: View {
                     
                     Form {
                         // 닉네임 입력
-                        // 닉네임 입력
-                        Section {
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("닉네임")
+                        VStack(alignment: .leading, spacing: 16) {
+                            
+                            VStack {Text("닉네임")
                                     .font(.system(size: 19, weight: .semibold))
                                     .foregroundColor(.gray)
                                     .bold()
+                                    .padding(.trailing, 260)
                                 
                                 HStack {
                                     TextField("닉네임을 입력하세요", text: $nickname)
@@ -58,15 +58,14 @@ struct Check: View {
                                         .stroke(Color.gray.opacity(0.4), lineWidth: 1)
                                 )
                             }
-                        }
-                        
-                        
-                        // 생년월일 버튼
-                        Section {
-                            VStack(alignment: .leading, spacing: 16) {
+                            .padding(.bottom)
+                            
+                            // 생년월일 버튼
+                            VStack{
                                 Text("생년월일")
                                     .font(.system(size: 19, weight: .semibold))
                                     .foregroundColor(.gray)
+                                    .padding(.trailing, 250)
                                 
                                 Button(action: {
                                     showDatePicker = true
@@ -91,21 +90,25 @@ struct Check: View {
                                     )
                                 }
                             }
+                            .padding(.top)
+                            .padding(.bottom)
+                            
+                            
+                            // 성별, 직업 선택
+                            VStack {
+                                Picker(title: "성별", selection: $sex, options: sexRanges)
+                            }
+                            .padding(.top)
+                            VStack {
+                                Picker(title: "직업", selection: $job, options: jobRanges)
+                            }
+                            .padding(.top)
+//                            .padding(.bottom, 20)
                         }
-                        
-                        // 성별, 직업 선택
-                        Section {
-                            CustomPickerView(title: "성별", selection: $sex, options: sexRanges)
-                        }
-                        Section {
-                            CustomPickerView(title: "직업", selection: $job, options: jobRanges)
-                        }
-//                        .padding(.bottom, 5)
                     }
-                    .scrollContentBackground(.hidden)
-                    .background(Color.white)
-//                    .offset(y: -40)
-                    
+                        .scrollContentBackground(.hidden)
+                        .background(Color.white)
+                        //                    .offset(y: -40)
                     // 저장 버튼
                     Button(action: {
                         showPainSurvey = true
@@ -149,6 +152,53 @@ struct Check: View {
         }
     }
 }
+
+// 성별, 직업 선택
+struct Picker: View {
+    var title: String
+    @Binding var selection: String
+    var options: [String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) { // 질문-다음 질문 사이 공백 추가
+            Text(title)
+                .font(.system(size: 19, weight: .semibold))
+                .foregroundColor(Color(red: 136/255, green: 135/255, blue: 136/255))
+
+
+            Menu {
+                ForEach(options, id: \.self) { option in
+                    Button(option) {
+                        selection = option
+                    }
+                }
+            } label: {
+                HStack {
+                    Text(selection.isEmpty ? "선택해주세요" : selection)
+                        .foregroundColor(selection.isEmpty ? Color(UIColor.placeholderText) : .primary)
+                        .font(.system(size: 15))
+
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                        .foregroundColor(.gray)
+                }
+                .padding(.vertical, 14)
+                .padding(.horizontal, 12)
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2) // 그림자 추가
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+                )
+                .padding(.bottom)
+            }
+            .padding(.top, -10)
+        }
+    }
+}
+
 #Preview {
     Check()
 }

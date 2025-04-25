@@ -67,6 +67,7 @@ struct PainSurvey: View {
                             Text("통증 정도 선택")
                                 .font(.headline)
                                 .padding(.leading)
+//                                .font(.system(size: 20))
                             ForEach(selectedPainAreas.sorted(), id: \.self) { area in
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text("\(area)")
@@ -78,7 +79,7 @@ struct PainSurvey: View {
                                         set: { painLevels[area] = $0 }
                                     ), in: 1...10, step: 1)
                                 }
-                                .font(.system(size: 18))
+                                .font(.system(size: 16))
                                 .padding(.leading)
                                 .padding(.trailing)
                             }
