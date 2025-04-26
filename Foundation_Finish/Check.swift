@@ -6,127 +6,139 @@ struct Check: View {
     @State private var showDatePicker = false
     @State private var isBirthdateSelected = false
     @State private var showPainSurvey = false
-    @State private var sex: String = ""
+    @State private var selectedGender: String = ""
     @State private var job: String = ""
-    
-    let sexRanges = ["남자", "여자"]
+
+    let GenderRanges = ["남자", "여자"]
     let jobRanges = ["학생", "직장인", "프리랜서", "자영업자", "주부", "기타"]
-    
+
     var formattedBirthdate: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 MM월 dd일"
         return formatter.string(from: birthdate)
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.white.ignoresSafeArea()
-                
+
                 VStack {
                     HStack {
-                        Text("자가 진단")
+                        Text("상태진단")
                             .font(.title2)
                             .bold()
                     }
                     .padding(.horizontal)
-                    
+
                     Divider()
-                    
-                    Form {
-                        // 닉네임 입력
-                        VStack(alignment: .leading, spacing: 16) {
+
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            ProgressView(value: 0.33)
+                                .padding(.top, 10)
+                                .padding(.bottom, 10)
+
                             
-                            VStack {Text("닉네임")
-                                    .font(.system(size: 19, weight: .semibold))
-                                    .foregroundColor(.gray)
-                                    .bold()
-                                    .padding(.trailing, 260)
+                            // 닉네임
+                                Text("닉네임")
+                                    .font(.system(size: 17))
+                                    .foregroundColor(.black)
                                 
+                            TextField("닉네임을 입력해주세요", text: $nickname)
+                                .font(.system(size: 15))
+                                .foregroundColor(.black)
+                                .padding(.vertical, 14)
+                                .padding(.horizontal, 12)
+                                .background(Color.white)
+                                .cornerRadius(10)
+                                .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
+                                .padding(.bottom, 35)
+
+                            
+                            // 생년월일
+                            Text("생년월일")
+                                .font(.system(size: 17))
+                                .foregroundColor(.black)
+
+                            Button(action: {
+                                showDatePicker = true
+                            }) {
                                 HStack {
-                                    TextField("닉네임을 입력하세요", text: $nickname)
+                                    Text(isBirthdateSelected ? formattedBirthdate : "연도/ 월/ 일")
+                                        .foregroundColor(isBirthdateSelected ? .primary : Color(UIColor.placeholderText))
                                         .font(.system(size: 15))
-                                        .padding(.vertical, 14)
-                                        .padding(.horizontal, 12)
+                                    Spacer()
+                                    Image(systemName: "calendar")
                                         .foregroundColor(.gray)
                                 }
+                                .padding(.vertical, 14)
+                                .padding(.horizontal, 12)
                                 .background(Color.white)
                                 .cornerRadius(10)
                                 .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.gray.opacity(0.4), lineWidth: 1)
-                                )
                             }
-                            .padding(.bottom)
+                            .padding(.bottom, 35)
                             
-                            // 생년월일 버튼
-                            VStack{
-                                Text("생년월일")
-                                    .font(.system(size: 19, weight: .semibold))
-                                    .foregroundColor(.gray)
-                                    .padding(.trailing, 250)
-                                
-                                Button(action: {
-                                    showDatePicker = true
-                                }) {
-                                    HStack {
-                                        Text(isBirthdateSelected ? formattedBirthdate : "생년월일을 선택해주세요")
-                                            .foregroundColor(isBirthdateSelected ? .primary : Color(UIColor.placeholderText))   // 닉네임을 입력하세요 색상일아 같게
-                                            .font(.system(size: 15))
-                                        Spacer()
-                                        Image(systemName: "chevron.down")
-                                            .foregroundColor(.gray)
+                            // 성별
+                            Text("성별")
+                                .font(.system(size: 17))
+                                .foregroundColor(.black)
+
+                            HStack(spacing: 0) {
+                                ForEach(GenderRanges.indices, id: \.self) { index in
+                                    let gender = GenderRanges[index]
+                                    
+                                    Button(action: {
+                                        selectedGender = gender
+                                    }) {
+                                        Text(gender)
+                                            .font(.system(size: 16, weight: .medium))
+                                            .frame(maxWidth: .infinity, minHeight: 50)
+                                            .background(selectedGender == gender ? Color.blue : Color.white)
+                                            .foregroundColor(selectedGender == gender ? .white : .black)
                                     }
-                                    .padding(.vertical, 14)
-                                    .padding(.horizontal, 12)
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.white)
-                                    .cornerRadius(10)
-                                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color.gray.opacity(0.4), lineWidth: 1)
-                                    )
+                                    
+                                    // 마지막 버튼 뒤에는 선 안 넣기
+                                    if index < GenderRanges.count - 1 {
+                                        Rectangle()
+                                            .fill(Color.gray.opacity(0.2))
+                                            .frame(width: 1, height: 50)
+                                    }
                                 }
                             }
-                            .padding(.top)
-                            .padding(.bottom)
+                            .clipShape(Capsule())
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            )
+                            .padding(.bottom, 35)
+
                             
-                            
-                            // 성별, 직업 선택
-                            VStack {
-                                Picker(title: "성별", selection: $sex, options: sexRanges)
-                            }
-                            .padding(.top)
-                            VStack {
-                                Picker(title: "직업", selection: $job, options: jobRanges)
-                            }
-                            .padding(.top)
-//                            .padding(.bottom, 20)
+                            // 직업
+                            PickerView(title: "직업", selection: $job, options: jobRanges)
                         }
+                        .padding(.horizontal, 20)
+                        
                     }
-                        .scrollContentBackground(.hidden)
-                        .background(Color.white)
-                        //                    .offset(y: -40)
-                    // 저장 버튼
+
+                    // 다음 버튼
                     Button(action: {
                         showPainSurvey = true
                     }) {
                         Text("다음")
                             .bold()
                             .foregroundColor(.white)
-                        //                            .frame(maxWidth: .infinity)
-                            .frame(width: 300, height: 20)
+                            .frame(width: 145, height: 20)
                             .padding()
                             .background(Color.blue)
                             .cornerRadius(10)
                             .shadow(radius: 2)
                     }
-                    .padding(.horizontal, 12)
+                    .padding(.leading, 180)
                     .padding(.bottom, 20)
-                    
-                    
+                    .shadow(color: .blue.opacity(0.1), radius: 6, x: 0, y: 4)
+
                     NavigationLink("", destination: PainSurvey(), isActive: $showPainSurvey)
                         .hidden()
                 }
@@ -139,13 +151,13 @@ struct Check: View {
                         .labelsHidden()
                         .environment(\.locale, .init(identifier: "ko_KR"))
                         .padding()
-                    
+
                     Button("선택 완료") {
                         isBirthdateSelected = true
                         showDatePicker = false
                     }
                     .padding()
-                    .foregroundColor(.black)
+                    .foregroundColor(.blue)
                 }
                 .presentationDetents([.height(300)])
             }
@@ -153,18 +165,17 @@ struct Check: View {
     }
 }
 
-// 성별, 직업 선택
-struct Picker: View {
+// PickerView 따로 분리
+struct PickerView: View {
     var title: String
     @Binding var selection: String
     var options: [String]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) { // 질문-다음 질문 사이 공백 추가
+        VStack(alignment: .leading, spacing: 20) {
             Text(title)
-                .font(.system(size: 19, weight: .semibold))
-                .foregroundColor(Color(red: 136/255, green: 135/255, blue: 136/255))
-
+                .font(.system(size: 17))
+                .foregroundColor(.black)
 
             Menu {
                 ForEach(options, id: \.self) { option in
@@ -177,24 +188,16 @@ struct Picker: View {
                     Text(selection.isEmpty ? "선택해주세요" : selection)
                         .foregroundColor(selection.isEmpty ? Color(UIColor.placeholderText) : .primary)
                         .font(.system(size: 15))
-
                     Spacer()
                     Image(systemName: "chevron.down")
                         .foregroundColor(.gray)
                 }
                 .padding(.vertical, 14)
                 .padding(.horizontal, 12)
-                .frame(maxWidth: .infinity)
                 .background(Color.white)
                 .cornerRadius(10)
-                .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2) // 그림자 추가
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.gray.opacity(0.4), lineWidth: 1)
-                )
-                .padding(.bottom)
+                .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
             }
-            .padding(.top, -10)
         }
     }
 }
