@@ -25,7 +25,7 @@ struct Check: View {
 
                 VStack {
                     HStack {
-                        Text("상태진단")
+                        Text("상태 진단")
                             .font(.title2)
                             .bold()
                     }
@@ -95,24 +95,31 @@ struct Check: View {
                                         Text(gender)
                                             .font(.system(size: 16, weight: .medium))
                                             .frame(maxWidth: .infinity, minHeight: 50)
-                                            .background(selectedGender == gender ? Color.blue : Color.white)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                                    .fill(selectedGender == gender ? Color.blue : Color.clear)
+                                                            )
                                             .foregroundColor(selectedGender == gender ? .white : .black)
                                     }
                                     
-                                    // 마지막 버튼 뒤에는 선 안 넣기
-                                    if index < GenderRanges.count - 1 {
-                                        Rectangle()
-                                            .fill(Color.gray.opacity(0.2))
-                                            .frame(width: 1, height: 50)
-                                    }
+//                                    if index < GenderRanges.count - 1 {
+//                                        Rectangle()
+//                                            .fill(Color.gray.opacity(0.2))
+//                                            .frame(width: 1, height: 50)
+//                                    }
                                 }
                             }
-                            .clipShape(Capsule())
-                            .overlay(
-                                Capsule()
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                                    .frame(height: 50)
+                            )
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color.white)
                             )
                             .padding(.bottom, 35)
+
 
                             
                             // 직업
