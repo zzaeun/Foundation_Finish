@@ -3,7 +3,7 @@ import SwiftUI
 struct StretchingGoodView: View {
     var body: some View{
         ZStack{
-            Image("SplashScreen")
+            Image("goodRabbit")
                 .resizable()
                 .frame(width: 353, height: 540)
                 .padding(.leading, 90)
