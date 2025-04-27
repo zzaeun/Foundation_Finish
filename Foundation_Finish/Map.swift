@@ -82,6 +82,7 @@ struct DayMessages: Codable {
     let t_initialPosition: Position
     let initialRotation: Rotation
     let r_initialPosition: Position  // 토끼 초기 위치 추가
+    let rabbit_pose: String  // 토끼 포즈 추가
 }
 
 struct DialogueData: Codable {
@@ -324,51 +325,52 @@ class GameController: NSObject, ObservableObject {
         scene.rootNode.addChildNode(floorNode)
 
         // 토끼 모델 로드
-        if let rabbitPath = Bundle.main.path(forResource: "3d_rabbit_sit", ofType: "usdz") {
-            print("Found rabbit at path: \(rabbitPath)")
-            let rabbitUrl = URL(fileURLWithPath: rabbitPath)
+        if let dialogueUrl = Bundle.main.url(forResource: "dialogue", withExtension: "json") {
             do {
-                let rabbitScene = try SCNScene(url: rabbitUrl, options: nil)
-                print("Successfully loaded rabbit scene")
-                let rabbitNode = rabbitScene.rootNode.childNodes.first ?? rabbitScene.rootNode
+                let data = try Data(contentsOf: dialogueUrl)
+                let decoder = JSONDecoder()
+                let dialogueData = try decoder.decode(DialogueData.self, from: data)
                 
-                // dialogue.json에서 현재 날짜의 토끼 초기 위치와 회전값을 가져옴
-                if let dialogueUrl = Bundle.main.url(forResource: "dialogue", withExtension: "json") {
-                    do {
-                        let data = try Data(contentsOf: dialogueUrl)
-                        let decoder = JSONDecoder()
-                        let dialogueData = try decoder.decode(DialogueData.self, from: data)
-                        
-                        if let dayData = dialogueData.days["day\(currentDay)"] {
-                            let initialPos = dayData.r_initialPosition
-                            let initialRot = dayData.initialRotation  // r_initialRotation 대신 initialRotation 사용
+                if let dayData = dialogueData.days["day\(currentDay)"] {
+                    let initialPos = dayData.r_initialPosition
+                    let initialRot = dayData.initialRotation
+                    let rabbitPose = dayData.rabbit_pose
+                    
+                    // 토끼 모델 로드
+                    if let rabbitPath = Bundle.main.path(forResource: rabbitPose, ofType: "usdz") {
+                        print("Found rabbit at path: \(rabbitPath)")
+                        let rabbitUrl = URL(fileURLWithPath: rabbitPath)
+                        do {
+                            let rabbitScene = try SCNScene(url: rabbitUrl, options: nil)
+                            print("Successfully loaded rabbit scene")
+                            let rabbitNode = rabbitScene.rootNode.childNodes.first ?? rabbitScene.rootNode
                             
                             rabbitNode.position = SCNVector3(initialPos.x, initialPos.y, initialPos.z)
                             rabbitNode.eulerAngles = SCNVector3(initialRot.x, initialRot.y, initialRot.z)
                             
                             print("Rabbit initial position: \(rabbitNode.position)")
                             print("Rabbit initial rotation: \(rabbitNode.eulerAngles)")
+                            
+                            rabbitNode.scale = SCNVector3(0.3, 0.3, 0.3)
+                            rabbitNode.castsShadow = true
+                            rabbitNode.renderingOrder = 0
+                            
+                            scene.rootNode.addChildNode(rabbitNode)
+                            self.rabbitNode = rabbitNode
+                            
+                            print("Added rabbit to scene")
+                        } catch {
+                            print("Error loading rabbit: \(error.localizedDescription)")
                         }
-                    } catch {
-                        print("Error loading rabbit initial position and rotation: \(error.localizedDescription)")
+                    } else {
+                        print("Could not find \(rabbitPose).usdz")
+                        let resourcePaths = Bundle.main.paths(forResourcesOfType: "usdz", inDirectory: nil)
+                        print("Available .usdz files: \(resourcePaths)")
                     }
                 }
-                
-                rabbitNode.scale = SCNVector3(0.3, 0.3, 0.3)
-                rabbitNode.castsShadow = true
-                rabbitNode.renderingOrder = 0
-                
-                scene.rootNode.addChildNode(rabbitNode)
-                self.rabbitNode = rabbitNode
-                
-                print("Added rabbit to scene")
             } catch {
-                print("Error loading rabbit: \(error.localizedDescription)")
+                print("Error loading rabbit initial position and rotation: \(error.localizedDescription)")
             }
-        } else {
-            print("Could not find 3d_rabbit_sit.usdz")
-            let resourcePaths = Bundle.main.paths(forResourcesOfType: "usdz", inDirectory: nil)
-            print("Available .usdz files: \(resourcePaths)")
         }
     }
     
@@ -1333,7 +1335,7 @@ struct GameView: View {
                 }
         }
         .navigationDestination(isPresented: $showStretchingView) {
-            //Stretching()
+            StretchingView()
         }
         //.navigationBarHidden(true)   // 이거 추가!
         .onAppear {
@@ -1392,10 +1394,16 @@ struct GameView: View {
     
     private func showNextMessage() {
         var GoshowStretchingView: Bool = false
+        
         if currentMessageIndex < messages.count {
-            let message = messages[currentMessageIndex]
-            currentImage = message.image
+            // 메시지 인덱스 증가
             currentMessageIndex += 1
+            
+            // 증가된 인덱스가 유효한 범위 내에 있는지 확인
+            if currentMessageIndex < messages.count {
+                // 다음 메시지의 이미지로 업데이트
+                currentImage = messages[currentMessageIndex].image
+            }
             
             // 마지막 메시지가 표시된 후 "함께 운동하러 가기" 메시지를 추가
             if currentMessageIndex == messages.count {
@@ -1407,7 +1415,8 @@ struct GameView: View {
                 GoshowStretchingView = true
             }
         }
-        if GoshowStretchingView == true{
+        
+        if GoshowStretchingView {
             // 모든 메시지가 표시된 후 자동으로 StretchingView로 이동
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 showStretchingView = true

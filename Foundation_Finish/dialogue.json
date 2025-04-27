@@ -3,43 +3,43 @@
         "day1": {
             "messages": [
                 {
-                    "text": "안녕! 너랑 같이 운동하게 될 '김수환무'야!",
-                    "image": "emoji_tutle_big_happy"
+                    "text": "오늘 온다구 했는데... 22",
+                    "image": "emoji_tutle_wait_with_peace"
                 },
                 {
-                    "text": "반가워!",
-                    "image": "emoji_tutle_thatsOK"
-                },
-                {
-                    "text": "우리 천천히, 함께 해보자!",
-                    "image": "emoji_tutle_eye_sparkling"
-                },
-                {
-                    "text": "어깨를 살짝 내리고, 고개를 쭉!",
-                    "image": "emoji_tutle_smile"
-                },
-                {
-                    "text": "오오! 자세 너무 멋진데?",
+                    "text": "어, 왔구나! 안녕 오늘부터 같이 운동하기로 한,",
                     "image": "emoji_tutle_Wow"
                 },
                 {
-                    "text": "몸이 조금 뻐근해도 괜찮아.",
-                    "image": "emoji_tutle_sad"
+                    "text": "내 이름은 김수한무야",
+                    "image": "emoji_tutle_eye_sparkling"
                 },
                 {
-                    "text": "나는 항상 네 옆에 있을게!",
+                    "text": "잘 부탁해! ",
+                    "image": "emoji_tutle_bigthumb_wink"
+                },
+                {
+                    "text": "거북이가 운동한다고 목이 펴지나~",
+                    "image": "emoji_rabbit_oneEye"
+                },
+                {
+                    "text": "저 녀석은 신경쓰지마",
+                    "image": "emoji_tutle_thinking"
+                },
+                {
+                    "text": "자기는 토끼라서 바른 허리를 가지고 있다고",
                     "image": "emoji_tutle_giveYouHeart"
                 },
                 {
-                    "text": "네가 이렇게 노력하는 모습, 정말 감동이야.",
-                    "image": "emoji_tutle_buddha_smile"
+                    "text": "매번 날 놀리는 녀석이야 나쁜 녀석은 아니야.",
+                    "image": "emoji_tutle_whatthesmell"
                 },
                 {
-                    "text": "조금씩, 차근차근 가자!",
+                    "text": "그럼 우리 오늘부터 시작이니까",
                     "image": "emoji_tutle_big_happy"
                 },
                 {
-                    "text": "자, 이제 우리 함께 운동하러 가자!",
+                    "text": "같이 운동하러 가볼까?",
                     "image": "emoji_tutle_yesIcan"
                 }
             ],
@@ -57,49 +57,51 @@
                 "x": -1.57,
                 "y": -3.15,
                 "z": 0.0
-            }
+            },
+            "rabbit_pose": "3d_rabbit_sit",
+            "turtle_pose": "3d_officer_tutle_standing"
         },
         "day2": {
             "messages": [
                 {
-                    "text": "오늘도 와줘서 정말 고마워!",
-                    "image": "emoji_tutle_giveYouHeart"
-                },
-                {
-                    "text": "사실 나도 오늘 좀 꾸물꾸물했어.",
-                    "image": "emoji_tutle_shy"
-                },
-                {
-                    "text": "허리가 살짝 뻐근하더라고... 너도 그래?",
-                    "image": "emoji_tutle_whathesmell"
-                },
-                {
-                    "text": "그래서 나 혼자 스트레칭했는데 팔만 들썩들썩했어. 헤헷.",
-                    "image": "emoji_tutle_dizzy"
-                },
-                {
-                    "text": "그래도 움직이니까 몸이 한결 가벼워졌어!",
-                    "image": "emoji_tutle_eye_sparkling"
-                },
-                {
-                    "text": "네가 있으니까 더 잘할 수 있을 것 같아.",
-                    "image": "emoji_tutle_big_happy"
-                },
-                {
-                    "text": "조금만 몸 풀어보자. 어깨부터 천천히~",
+                    "text": "안녕! 어제 운동한 거 어땠어?",
                     "image": "emoji_tutle_smile"
                 },
                 {
-                    "text": "아, 나 방금 기지개 켰더니 등에 '뚜둑' 소리났어. 너도 조심해!",
-                    "image": "emoji_tutle_whatthesmell"
+                    "text": "난 어제 스트레칭하고나서 몸이 조금 가벼워졌어!",
+                    "image": "emoji_tutle_big_happy"
                 },
                 {
-                    "text": "한 걸음씩 같이 가는 거야. 천천히.",
-                    "image": "emoji_tutle_thatsOK"
+                    "text": "너도 조금은 나아진 것 같았지?",
+                    "image": "emoji_tutle_eye_sparkling"
                 },
                 {
-                    "text": "좋아, 이제 우리 함께 운동하러 가자!",
+                    "text": "오, 그런데...",
+                    "image": "emoji_rabbit_yawning"
+                },
+                {
+                    "text": "운동 하루 했다고 거북목이 없어지진 않지? 후훗.",
+                    "image": "emoji_rabbit_armcross_openmouse"
+                },
+                {
+                    "text": "저 토끼녀석 또 저러네",
+                    "image": "emoji_tutle_thinking"
+                },
+                {
+                    "text": "우리는 우리의 길을 가자구! ",
                     "image": "emoji_tutle_yesIcan"
+                },
+                {
+                    "text": "꾸준히 하면 분명 좋아질거니까",
+                    "image": "emoji_tutle_yesIcan"
+                },
+                {
+                    "text": "그나저나 막상 하려니 몸이 무겁네 ",
+                    "image": "emoji_tutle_dizzy"
+                },
+                {
+                    "text": "ㅎㅎㅎ ",
+                    "image": "emoji_tutle_embarrassed_grin"
                 }
             ],
             "t_initialPosition": {
@@ -116,48 +118,50 @@
                 "x": -1.57,
                 "y": -3.15,
                 "z": 0.0
-            }
+            },
+            "rabbit_pose": "3d_rabbit_sit",
+            "turtle_pose": "3d_officer_tutle_standing"
         },
         "day3": {
             "messages": [
                 {
-                    "text": "오늘도 잘 왔구나! 기다리고 있었어!",
-                    "image": "emoji_tutle_happy"
+                    "text": "아이구 오늘따라 목이 더 뻐근하네 ",
+                    "image": "emoji_tutle_dizzy"
                 },
                 {
-                    "text": "어? 저기 토끼가 오네... 새로운 친구야!",
-                    "image": "emoji_tutle_smile"
+                    "text": "아무리 거북이라지만 이거 너무 심한 거북목이잖아. ",
+                    "image": "emoji_rabbit_armcross_teeth"
                 },
                 {
-                    "text": "헤헷, 척추 스트레칭은 기본 아닌가? 나 초등학교 때부터 했는데?",
-                    "image": "emoji_rabbit_smirk"
+                    "text": "으... 회사에서 하루 종일 앉아있다 보니까 이렇게 됐어...",
+                    "image": "officer_computering"
                 },
                 {
-                    "text": "으앗... 토끼는 옛날부터 스트레칭을 잘했구나...!",
-                    "image": "emoji_tutle_shy"
+                    "text": "나는 자세 교정 스트레칭, 매일 했거든. 어려운 것도 아닌데~",
+                    "image": "emoji_rabbit_oneEye"
                 },
                 {
-                    "text": "목이 그렇게 앞으로 빠지면 균형 감각 다 망가진다던데? 진짜야.",
-                    "image": "emoji_rabbit_explain"
+                    "text": "어려운 것도 아닌데~",
+                    "image": "emoji_rabbit_itsYou"
                 },
                 {
-                    "text": "우리 같이 천천히 해보자. 괜찮아. 누구나 시작은 서툴러.",
-                    "image": "emoji_tutle_comfort"
+                    "text": "맨날 아프다고 하면서 아무것도 안하는 너도 참..",
+                    "image": "emoji_rabbit_Curiousty"
                 },
                 {
-                    "text": "나는 처음엔 스트레칭할 때 발이 덜덜 떨렸어. 정말이야!",
-                    "image": "emoji_tutle_embarrassed"
+                    "text": "뭐 네 인생이니까 ",
+                    "image": "emoji_rabbit_itsme"
                 },
                 {
-                    "text": "꾸준히 하다 보면 오늘보다 훨씬 좋아질 거야.",
-                    "image": "emoji_tutle_big_happy"
+                    "text": "(오늘따라 대꾸할 힘도 없네)",
+                    "image": "emoji_tutle_thinking"
                 },
                 {
-                    "text": "하루 한 걸음, 그게 나랑 너의 비밀 무기야.",
-                    "image": "emoji_tutle_eye_sparkling"
+                    "text": "거북이로 태어났다지만 참.. ",
+                    "image": "emoji_rabbit_sigh"
                 },
                 {
-                    "text": "좋아, 이제 우리 함께 몸을 쭉쭉 펴러 가볼까?",
+                    "text": "(힘없이) 우리 운동하러 가자 ",
                     "image": "emoji_tutle_yesIcan"
                 }
             ],
@@ -175,8 +179,54 @@
                 "x": -1.57,
                 "y": -3.15,
                 "z": 0.0
-            }
+            },
+            "rabbit_pose": "3d_rabbit_sit",
+            "turtle_pose": "3d_officer_tutle_standing"
         },
-        
+        "day4": {
+            "messages": [
+                {
+                    "text": "헤헤, 오늘은 점심시간에도 스트레칭을 했어!",
+                    "image": "emoji_tutle_big_happy"
+                },
+                {
+                    "text": "앉아서만 있으면 어깨랑 목이 너무 답답했거든.",
+                    "image": "emoji_tutle_shoulder_stiff"
+                },
+                {
+                    "text": "근데 조금이라도 움직이니까 기분이 확 좋아졌어!",
+                    "image": "emoji_tutle_eye_sparkling"
+                },
+                {
+                    "text": "역시 움직여야해!",
+                    "image": "emoji_tutle_giveYouHeart"
+                },
+                {
+                    "text": "오늘 스트레칭도 잘해보자! ",
+                    "image": "emoji_tutle_yesIcan"
+                },
+                {
+                    "text": "자, 그럼 우리 힘차게 운동하러 가자!",
+                    "image": "emoji_tutle_bigthumb_wink"
+                }
+            ],
+            "t_initialPosition": {
+                "x": -0.18,
+                "y": 0.2,
+                "z": -3.36
+            },
+            "r_initialPosition": {
+                "x": -0.2336,
+                "y": 0.2,
+                "z": -2.5
+            },
+            "initialRotation": {
+                "x": -1.57,
+                "y": -3.15,
+                "z": 0.0
+            },
+            "rabbit_pose": "3d_rabbit_sit",
+            "turtle_pose": "3d_officer_tutle_standing"
+        }
     }
 }
