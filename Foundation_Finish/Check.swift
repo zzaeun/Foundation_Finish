@@ -51,6 +51,7 @@ struct Check: View {
                                 Text("닉네임")
                                     .font(.system(size: 17))
                                     .foregroundColor(.black)
+                                    .padding(.leading, 5)
                                 
                             TextField("닉네임을 입력해주세요", text: $nickname)
                                 .font(.system(size: 15))
@@ -67,6 +68,7 @@ struct Check: View {
                             Text("생년월일")
                                 .font(.system(size: 17))
                                 .foregroundColor(.black)
+                                .padding(.leading, 3)
 
                             Button(action: {
                                 showDatePicker = true
@@ -91,6 +93,7 @@ struct Check: View {
                             Text("성별")
                                 .font(.system(size: 17))
                                 .foregroundColor(.black)
+                                .padding(.leading, 3)
 
                             HStack(spacing: 0) {
                                 ForEach(GenderRanges.indices, id: \.self) { index in
@@ -196,6 +199,7 @@ struct PickerView: View {
             Text(title)
                 .font(.system(size: 17))
                 .foregroundColor(.black)
+                .padding(.leading, 2)
 
             Menu {
                 ForEach(options, id: \.self) { option in

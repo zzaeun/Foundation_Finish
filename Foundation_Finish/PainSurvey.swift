@@ -111,6 +111,8 @@ struct PainSurvey: View {
                     .font(.system(size: 16))
                     .foregroundColor(.gray)
             }
+            .padding(.bottom)
+            .padding(.top, -25)
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) { // 2열의 유연한 그리드
                 ForEach(painAreas, id: \.self) { area in // painAreas 배열의 각 요소를 순회

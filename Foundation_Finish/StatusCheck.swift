@@ -43,10 +43,11 @@ struct StatusCheck: View {
                                 CustomPickerView(title: "하루 평균 앉아있는 시간이 얼마나 되나요?", selection: $sittingTime, options: timeRanges)
                                     .padding(.bottom, 16)
                                     .padding(.horizontal, 5)
-                                
+                                    .padding(.top, -5)
                                 CustomPickerView(title: "하루 평균 스마트폰/컴퓨터 사용 시간이 얼마나 되나요?", selection: $exerciseFrequency, options: timeRanges)
                                     .padding(.horizontal, 5)
                             }
+                            
                         }
                         .padding(.bottom, 16)
                         questionSection(
