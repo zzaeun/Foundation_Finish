@@ -3,26 +3,55 @@
         "day1": {
             "messages": [
                 {
-                  "text": "하아... 오늘도 야근인가.",
-                  "image": "emoji_busy"
+                    "text": "안녕! 너랑 같이 운동하게 될 '김수환무'야!",
+                    "image": "emoji_tutle_big_happy"
                 },
                 {
-                  "text": "보고서가 왜 이렇게 많은 거야...",
-                  "image": "emoji_busy"
+                    "text": "반가워!",
+                    "image": "emoji_tutle_thatsOK"
                 },
                 {
-                  "text": "허리가 끊어질 것 같아...",
-                  "image": "emoji_sad"
+                    "text": "우리 천천히, 함께 해보자!",
+                    "image": "emoji_tutle_eye_sparkling"
                 },
                 {
-                  "text": "그래도... 다행이다. 오늘은 평소보다 일찍 끝났네?",
-                  "image": "emoji_smile"
+                    "text": "어깨를 살짝 내리고, 고개를 쭉!",
+                    "image": "emoji_tutle_smile"
+                },
+                {
+                    "text": "오오! 자세 너무 멋진데?",
+                    "image": "emoji_tutle_Wow"
+                },
+                {
+                    "text": "몸이 조금 뻐근해도 괜찮아.",
+                    "image": "emoji_tutle_sad"
+                },
+                {
+                    "text": "나는 항상 네 옆에 있을게!",
+                    "image": "emoji_tutle_giveYouHeart"
+                },
+                {
+                    "text": "네가 이렇게 노력하는 모습, 정말 감동이야.",
+                    "image": "emoji_tutle_buddha_smile"
+                },
+                {
+                    "text": "조금씩, 차근차근 가자!",
+                    "image": "emoji_tutle_big_happy"
+                },
+                {
+                    "text": "자, 이제 우리 함께 운동하러 가자!",
+                    "image": "emoji_tutle_yesIcan"
                 }
             ],
-            "initialPosition": {
-                "x": -0.1312,
+            "t_initialPosition": {
+                "x": -0.12,
                 "y": 0.2,
                 "z": -4
+            },
+            "r_initialPosition": {
+                "x": -0.18,
+                "y": 0.2,
+                "z": -3.4
             },
             "initialRotation": {
                 "x": -1.57,
@@ -33,24 +62,121 @@
         "day2": {
             "messages": [
                 {
-                    "text": "오늘은 새로운 모험이 시작됩니다!",
-                    "image": "emoji_computering"
+                    "text": "오늘도 와줘서 정말 고마워!",
+                    "image": "emoji_tutle_giveYouHeart"
                 },
                 {
-                    "text": "숲 속에 있는 보물을 찾아주세요.",
-                    "image": "emoji_smile"
+                    "text": "사실 나도 오늘 좀 꾸물꾸물했어.",
+                    "image": "emoji_tutle_shy"
+                },
+                {
+                    "text": "허리가 살짝 뻐근하더라고... 너도 그래?",
+                    "image": "emoji_tutle_whathesmell"
+                },
+                {
+                    "text": "그래서 나 혼자 스트레칭했는데 팔만 들썩들썩했어. 헤헷.",
+                    "image": "emoji_tutle_dizzy"
+                },
+                {
+                    "text": "그래도 움직이니까 몸이 한결 가벼워졌어!",
+                    "image": "emoji_tutle_eye_sparkling"
+                },
+                {
+                    "text": "네가 있으니까 더 잘할 수 있을 것 같아.",
+                    "image": "emoji_tutle_big_happy"
+                },
+                {
+                    "text": "조금만 몸 풀어보자. 어깨부터 천천히~",
+                    "image": "emoji_tutle_smile"
+                },
+                {
+                    "text": "아, 나 방금 기지개 켰더니 등에 '뚜둑' 소리났어. 너도 조심해!",
+                    "image": "emoji_tutle_whatthesmell"
+                },
+                {
+                    "text": "한 걸음씩 같이 가는 거야. 천천히.",
+                    "image": "emoji_tutle_thatsOK"
+                },
+                {
+                    "text": "좋아, 이제 우리 함께 운동하러 가자!",
+                    "image": "emoji_tutle_yesIcan"
                 }
             ],
-            "initialPosition": {
-                "x": -0.42,
-                "y": 0,
-                "z": -0.12
+            "t_initialPosition": {
+                "x": -0.1558,
+                "y": 0.2,
+                "z": -3.68
+            },
+            "r_initialPosition": {
+                "x": -0.12,
+                "y": 0.2,
+                "z": -4
             },
             "initialRotation": {
                 "x": -1.57,
-                "y": -2.9,
+                "y": -3.15,
                 "z": 0.0
             }
-        }
+        },
+        "day3": {
+            "messages": [
+                {
+                    "text": "오늘도 잘 왔구나! 기다리고 있었어!",
+                    "image": "emoji_tutle_happy"
+                },
+                {
+                    "text": "어? 저기 토끼가 오네... 새로운 친구야!",
+                    "image": "emoji_tutle_smile"
+                },
+                {
+                    "text": "헤헷, 척추 스트레칭은 기본 아닌가? 나 초등학교 때부터 했는데?",
+                    "image": "emoji_rabbit_smirk"
+                },
+                {
+                    "text": "으앗... 토끼는 옛날부터 스트레칭을 잘했구나...!",
+                    "image": "emoji_tutle_shy"
+                },
+                {
+                    "text": "목이 그렇게 앞으로 빠지면 균형 감각 다 망가진다던데? 진짜야.",
+                    "image": "emoji_rabbit_explain"
+                },
+                {
+                    "text": "우리 같이 천천히 해보자. 괜찮아. 누구나 시작은 서툴러.",
+                    "image": "emoji_tutle_comfort"
+                },
+                {
+                    "text": "나는 처음엔 스트레칭할 때 발이 덜덜 떨렸어. 정말이야!",
+                    "image": "emoji_tutle_embarrassed"
+                },
+                {
+                    "text": "꾸준히 하다 보면 오늘보다 훨씬 좋아질 거야.",
+                    "image": "emoji_tutle_big_happy"
+                },
+                {
+                    "text": "하루 한 걸음, 그게 나랑 너의 비밀 무기야.",
+                    "image": "emoji_tutle_eye_sparkling"
+                },
+                {
+                    "text": "좋아, 이제 우리 함께 몸을 쭉쭉 펴러 가볼까?",
+                    "image": "emoji_tutle_yesIcan"
+                }
+            ],
+            "t_initialPosition": {
+                "x": -0.18,
+                "y": 0.2,
+                "z": -3.36
+            },
+            "r_initialPosition": {
+                "x": -0.2336,
+                "y": 0.2,
+                "z": -2.5
+            },
+            "initialRotation": {
+                "x": -1.57,
+                "y": -3.15,
+                "z": 0.0
+            }
+        },
+        
     }
-} 
+}

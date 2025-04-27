@@ -2,6 +2,23 @@ import SwiftUI
 import SceneKit
 import AVFoundation
 import UIKit
+import SwiftData
+
+@Model
+class Challenge {
+    var title: String       //챌린지 제목 "척추의 길"
+    var day: Int            //오늘이 몇 번째 날인지
+    var startDate: Date     //챌린지 시작한 날짜
+    var isTodayDone: Bool   //오늘 챌린지를 했는지
+
+    init(title: String, day: Int, startDate: Date, isTodayDone:Bool) {
+        self.title = title
+        self.day = day
+        self.startDate = startDate
+        self.isTodayDone = isTodayDone
+    }
+}
+
 
 // MARK: - Extensions
 extension SCNVector3 {
@@ -62,15 +79,16 @@ struct BoneData: Codable {
 
 struct DayMessages: Codable {
     let messages: [Message]
-    let initialPosition: Position
+    let t_initialPosition: Position
     let initialRotation: Rotation
+    let r_initialPosition: Position  // 토끼 초기 위치 추가
 }
 
 struct DialogueData: Codable {
     let days: [String: DayMessages]
 }
 
-class GameController: ObservableObject {
+class GameController: NSObject, ObservableObject {
     @Published var playerPosition = SCNVector3(0, 0, 0)
     @Published var playerRotation = SCNVector3(0, 0, 0)
     @Published var isJumping = false
@@ -83,6 +101,7 @@ class GameController: ObservableObject {
     
     var playerNode: SCNNode?
     var cameraNode: SCNNode?
+    var rabbitNode: SCNNode?  // 토끼 노드 추가
     private(set) var scene: SCNScene
     
     // 사운드 효과
@@ -148,16 +167,8 @@ class GameController: ObservableObject {
     
     init(currentDay: Int = 1) {
         self.currentDay = currentDay
-        // 씬 초기화
         self.scene = SCNScene()
-        
-        // 사운드 초기화 - 파일이 없는 경우 무시
-        if let jumpUrl = Bundle.main.url(forResource: "jump", withExtension: "wav") {
-            jumpSound = try? AVAudioPlayer(contentsOf: jumpUrl)
-        } else {
-            print("Jump sound file not found")
-        }
-        
+        super.init()
         setupScene()
     }
     
@@ -173,60 +184,6 @@ class GameController: ObservableObject {
         scene.rootNode.addChildNode(newCameraNode)
         self.cameraNode = newCameraNode
         
-        // 그리드 추가
-        let gridSize: Float = 10.0
-        let gridStep: Float = 1.0
-        let gridColor = UIColor.white.withAlphaComponent(0.3)
-        
-        // X축 그리드
-        for i in stride(from: -gridSize, through: gridSize, by: gridStep) {
-            let line = SCNNode()
-            let geometry = SCNBox(width: 0.01, height: 0.01, length: CGFloat(gridSize * 2), chamferRadius: 0)
-            let material = SCNMaterial()
-            material.diffuse.contents = gridColor
-            geometry.materials = [material]
-            line.geometry = geometry
-            line.position = SCNVector3(Float(i), 0, 0)
-            scene.rootNode.addChildNode(line)
-            
-            // X축 좌표 텍스트
-            let text = SCNText(string: String(format: "%.0f", i), extrusionDepth: 0.1)
-            text.font = UIFont.systemFont(ofSize: 0.2)
-            let textNode = SCNNode(geometry: text)
-            textNode.position = SCNVector3(Float(i), 0.2, 0)
-            textNode.scale = SCNVector3(0.1, 0.1, 0.1)
-            scene.rootNode.addChildNode(textNode)
-        }
-        
-        // Z축 그리드
-        for i in stride(from: -gridSize, through: gridSize, by: gridStep) {
-            let line = SCNNode()
-            let geometry = SCNBox(width: CGFloat(gridSize * 2), height: 0.01, length: 0.01, chamferRadius: 0)
-            let material = SCNMaterial()
-            material.diffuse.contents = gridColor
-            geometry.materials = [material]
-            line.geometry = geometry
-            line.position = SCNVector3(0, 0, Float(i))
-            scene.rootNode.addChildNode(line)
-            
-            // Z축 좌표 텍스트
-            let text = SCNText(string: String(format: "%.0f", i), extrusionDepth: 0.1)
-            text.font = UIFont.systemFont(ofSize: 0.2)
-            let textNode = SCNNode(geometry: text)
-            textNode.position = SCNVector3(0, 0.2, Float(i))
-            textNode.scale = SCNVector3(0.1, 0.1, 0.1)
-            scene.rootNode.addChildNode(textNode)
-        }
-        
-        // 원점 표시
-        let originNode = SCNNode()
-        let originGeometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
-        let originMaterial = SCNMaterial()
-        originMaterial.diffuse.contents = UIColor.red
-        originGeometry.materials = [originMaterial]
-        originNode.geometry = originGeometry
-        originNode.position = SCNVector3(0, 0, 0)
-        scene.rootNode.addChildNode(originNode)
         
         // 카메라 각도 초기화
         self.cameraAngle = -2.6
@@ -300,7 +257,7 @@ class GameController: ObservableObject {
                         let dialogueData = try decoder.decode(DialogueData.self, from: data)
                         
                         if let dayData = dialogueData.days["day\(currentDay)"] {
-                            let initialPos = dayData.initialPosition
+                            let initialPos = dayData.t_initialPosition
                             let initialRot = dayData.initialRotation
                             
                             turtleNode.position = SCNVector3(initialPos.x, initialPos.y, initialPos.z)
@@ -360,11 +317,59 @@ class GameController: ObservableObject {
         floor.materials = [floorMaterial]
         
         let floorNode = SCNNode(geometry: floor)
-        floorNode.position = SCNVector3(0, -0.05, 0)
+        floorNode.position = SCNVector3(0, 0, 0)
         floorNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
         floorNode.physicsBody?.categoryBitMask = 8
         floorNode.physicsBody?.collisionBitMask = 1
         scene.rootNode.addChildNode(floorNode)
+
+        // 토끼 모델 로드
+        if let rabbitPath = Bundle.main.path(forResource: "3d_rabbit_sit", ofType: "usdz") {
+            print("Found rabbit at path: \(rabbitPath)")
+            let rabbitUrl = URL(fileURLWithPath: rabbitPath)
+            do {
+                let rabbitScene = try SCNScene(url: rabbitUrl, options: nil)
+                print("Successfully loaded rabbit scene")
+                let rabbitNode = rabbitScene.rootNode.childNodes.first ?? rabbitScene.rootNode
+                
+                // dialogue.json에서 현재 날짜의 토끼 초기 위치와 회전값을 가져옴
+                if let dialogueUrl = Bundle.main.url(forResource: "dialogue", withExtension: "json") {
+                    do {
+                        let data = try Data(contentsOf: dialogueUrl)
+                        let decoder = JSONDecoder()
+                        let dialogueData = try decoder.decode(DialogueData.self, from: data)
+                        
+                        if let dayData = dialogueData.days["day\(currentDay)"] {
+                            let initialPos = dayData.r_initialPosition
+                            let initialRot = dayData.initialRotation  // r_initialRotation 대신 initialRotation 사용
+                            
+                            rabbitNode.position = SCNVector3(initialPos.x, initialPos.y, initialPos.z)
+                            rabbitNode.eulerAngles = SCNVector3(initialRot.x, initialRot.y, initialRot.z)
+                            
+                            print("Rabbit initial position: \(rabbitNode.position)")
+                            print("Rabbit initial rotation: \(rabbitNode.eulerAngles)")
+                        }
+                    } catch {
+                        print("Error loading rabbit initial position and rotation: \(error.localizedDescription)")
+                    }
+                }
+                
+                rabbitNode.scale = SCNVector3(0.3, 0.3, 0.3)
+                rabbitNode.castsShadow = true
+                rabbitNode.renderingOrder = 0
+                
+                scene.rootNode.addChildNode(rabbitNode)
+                self.rabbitNode = rabbitNode
+                
+                print("Added rabbit to scene")
+            } catch {
+                print("Error loading rabbit: \(error.localizedDescription)")
+            }
+        } else {
+            print("Could not find 3d_rabbit_sit.usdz")
+            let resourcePaths = Bundle.main.paths(forResourcesOfType: "usdz", inDirectory: nil)
+            print("Available .usdz files: \(resourcePaths)")
+        }
     }
     
     // 축 표시를 위한 함수 추가
@@ -873,7 +878,7 @@ class GameController: ObservableObject {
                             let adjustedY = max(position.y, terrainHeight)
                             
                             boneNode.position = SCNVector3(position.x, adjustedY, position.z)
-                            boneNode.scale = SCNVector3(0.2, 0.2, 0.2)  // 크기를 2.0으로 설정
+                            boneNode.scale = SCNVector3(0.15, 0.15, 0.15)  // 크기를 2.0으로 설정
                             boneNode.eulerAngles = SCNVector3(-Float.pi/2, 0, 0)  // 회전 조정
                             
                             // 뼈 노드에 물리 바디 추가
@@ -1063,7 +1068,14 @@ class GameController: ObservableObject {
     
     // standing 모델로 변경
     private func changeToStandingModel() {
-        guard let player = playerNode, isBacktouchModel else { return }
+        guard let player = playerNode else { 
+            print("Cannot change to standing model: player is nil")
+            return 
+        }
+        
+        print("Changing to standing model")
+        print("Current player node: \(player)")
+        print("Current player position: \(player.position)")
         
         // standing 모델 로드
         if let standingPath = Bundle.main.path(forResource: "3d_officer_tutle_standing", ofType: "usdz") {
@@ -1072,12 +1084,15 @@ class GameController: ObservableObject {
             do {
                 let standingScene = try SCNScene(url: standingUrl, options: nil)
                 print("Successfully loaded standing scene")
-                let standingNode = standingScene.rootNode
+                let standingNode = standingScene.rootNode.childNodes.first ?? standingScene.rootNode
                 
                 // 현재 위치와 회전값 유지
                 standingNode.position = player.position
                 standingNode.eulerAngles = player.eulerAngles
                 standingNode.scale = player.scale
+                
+                print("Standing node position: \(standingNode.position)")
+                print("Standing node scale: \(standingNode.scale)")
                 
                 // 기존 노드 제거
                 player.removeFromParentNode()
@@ -1087,10 +1102,7 @@ class GameController: ObservableObject {
                 self.playerNode = standingNode
                 
                 // 축 표시 추가
-                addAxisVisualization(to: standingNode)
-                
-                // 모델 변경 상태 업데이트
-                isBacktouchModel = false
+                //addAxisVisualization(to: standingNode)
                 
                 // 애니메이션 재생 시작
                 playStandingAnimation()
@@ -1101,54 +1113,79 @@ class GameController: ObservableObject {
             }
         } else {
             print("Could not find officer_tutle_standing.usdz")
+            // 번들 내 모든 리소스 출력
+            let resourcePaths = Bundle.main.paths(forResourcesOfType: "usdz", inDirectory: nil)
+            print("Available .usdz files: \(resourcePaths)")
         }
     }
     
-    // Bone 추가 함수
-    func addBone(position: SCNVector3) {
-        guard let boneURL = Bundle.main.url(forResource: "bone", withExtension: "usdz") else {
-            print("Error: bone.usdz not found")
-            return
+    // 캐릭터 터치 처리 함수 추가
+    func handleCharacterTouch() {
+        guard let player = playerNode else { 
+            print("Error: playerNode is nil")
+            return 
         }
         
-        do {
-            let boneScene = try SCNScene(url: boneURL, options: nil)
-            // 새로운 뼈 노드 생성
-            let boneNode = boneScene.rootNode.clone()
-            
-            // 지형 높이 확인
-            let terrainHeight = getGroundHeight(at: position)
-            
-            // bone의 y값이 지형보다 낮으면 지형 높이에 맞춤
-            let adjustedY = max(position.y, terrainHeight)
-            
-            boneNode.position = SCNVector3(position.x, adjustedY, position.z)
-            boneNode.scale = SCNVector3(0.1, 0.1, 0.1)
-            
-            // 랜덤 회전 추가
-            let randomRotation = Float.random(in: 0...Float.pi * 2)
-            boneNode.eulerAngles.y = randomRotation
-            
-            scene.rootNode.addChildNode(boneNode)
-            bonePositions.append(boneNode.position)
-            
-            // 3초 후에 뼈다귀 제거
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
-                boneNode.removeFromParentNode()
-                if let index = self?.bonePositions.firstIndex(where: { $0.x == boneNode.position.x && $0.z == boneNode.position.z }) {
-                    self?.bonePositions.remove(at: index)
+        print("handleCharacterTouch called")
+        print("Current player node: \(player)")
+        print("Current player position: \(player.position)")
+        print("Current player scale: \(player.scale)")
+        
+        // Hi 모델로 변경
+        if let hiPath = Bundle.main.path(forResource: "3d_officer_tutle_Hi", ofType: "usdz") {
+            print("Found Hi model at path: \(hiPath)")
+            let hiUrl = URL(fileURLWithPath: hiPath)
+            do {
+                let hiScene = try SCNScene(url: hiUrl, options: nil)
+                print("Successfully loaded Hi scene")
+                let hiNode = hiScene.rootNode.childNodes.first ?? hiScene.rootNode
+                
+                // 현재 위치와 회전값 유지
+                hiNode.position = player.position
+                hiNode.eulerAngles = player.eulerAngles
+                hiNode.scale = player.scale
+                
+                print("Hi node position: \(hiNode.position)")
+                print("Hi node scale: \(hiNode.scale)")
+                
+                // 기존 노드 제거
+                player.removeFromParentNode()
+                
+                // 새 노드 추가
+                scene.rootNode.addChildNode(hiNode)
+                self.playerNode = hiNode
+                
+                // Hi 애니메이션 재생
+                let animationKeys = hiNode.animationKeys
+                print("Hi model animation keys: \(animationKeys)")
+                
+                if !animationKeys.isEmpty {
+                    print("Available animations: \(animationKeys)")
+                    let animation = hiNode.animation(forKey: animationKeys[0])!
+                    animation.duration = 12.5
+                    animation.repeatCount = 1
+                    hiNode.addAnimation(animation, forKey: "hiAnimation")
+                    print("Playing Hi animation")
+                } else {
+                    print("No animations found in Hi model")
                 }
+                
+                // 애니메이션 완료 후 Standing 모델로 돌아가기
+                DispatchQueue.main.asyncAfter(deadline: .now() + 12.5) { [weak self] in // 2초 후에 변경
+                    print("Changing back to Standing model")
+                    self?.changeToStandingModel()
+                }
+                
+                print("Changed to Hi model")
+            } catch {
+                print("Error loading Hi model: \(error.localizedDescription)")
             }
-        } catch {
-            print("Error loading bone model: \(error)")
+        } else {
+            print("Could not find officer_tutle_Hi.usdz")
+            // 번들 내 모든 리소스 출력
+            let resourcePaths = Bundle.main.paths(forResourcesOfType: "usdz", inDirectory: nil)
+            print("Available .usdz files: \(resourcePaths)")
         }
-    }
-    
-    // 지형 높이를 가져오는 함수
-    private func getTerrainHeight(at position: SCNVector3) -> Float {
-        // 여기서는 간단한 예시로 0을 반환하지만, 실제로는 지형의 높이를 계산해야 합니다.
-        // 예를 들어, 지형 메시와의 레이캐스트를 통해 높이를 계산할 수 있습니다.
-        return 0.0
     }
 }
 
@@ -1167,21 +1204,16 @@ class SceneViewDelegate: NSObject, SCNSceneRendererDelegate {
 struct GameView: View {
     @ObservedObject private var gameController: GameController
     private let sceneDelegate: SceneViewDelegate
-    @State private var isMovingForward = false
-    @State private var isMovingBackward = false
-    @State private var isMovingLeft = false
-    @State private var isMovingRight = false
     @State private var currentDay: Int = 1
     @State private var currentMessageIndex: Int = 0
     @State private var messages: [Message] = []
     @State private var currentImage: String = "emoji_computering"
     @State private var showStretchingView: Bool = false
-    @State private var GoshowStretchingView: Bool = false
-    @State private var moveTimer: Timer? = nil
-    @State private var isButtonPressed = false
-    @State private var isBacktouchModel: Bool = false
+    
     @State private var lastDragValue: CGFloat = 0
-    @State private var isDragging: Bool = false
+    
+    @Query var challenges: [Challenge]   // ← 저장된 Challenge 배열을 자동으로 가져옴
+
     
     init() {
         let controller = GameController(currentDay: 1)  // currentDay 전달
@@ -1190,33 +1222,13 @@ struct GameView: View {
         self.currentImage = "emoji_computering"
     }
     
-    // 타이머 정리 함수
-    private func stopMoveTimer() {
-        moveTimer?.invalidate()
-        moveTimer = nil
-        isButtonPressed = false
-    }
+    @State private var challenge: Challenge? = nil
     
-    // 버튼 누르기 시작 함수
-    private func startMoving(action: @escaping () -> Void) {
-        // 이미 버튼이 눌려있으면 무시
-        if isButtonPressed {
-            return
-        }
-        
-        isButtonPressed = true
-        
-        // 즉시 한 번 실행
-        action()
-        
-        // 타이머 설정 - 0.1초마다 반복
-        moveTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            action()
-        }
-    }
-    
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
-        NavigationView {
+    
+        NavigationStack {
             VStack(spacing: 0) {
                 // 3D Scene
                 GeometryReader { geometry in
@@ -1226,113 +1238,117 @@ struct GameView: View {
                             options: [.autoenablesDefaultLighting],
                             delegate: sceneDelegate
                         )
+                        .ignoresSafeArea()
                         .focusable()
                         .simultaneousGesture(
                             DragGesture(minimumDistance: 0)
                                 .onChanged { value in
                                     let delta = value.translation.height - lastDragValue
-                                    gameController.moveCameraZ(angle: Float(delta) * 0.1)  // 0.2에서 0.1로 감소
+                                    gameController.moveCameraZ(angle: Float(delta) * 0.1)
                                     lastDragValue = value.translation.height
                                 }
                                 .onEnded { _ in
                                     lastDragValue = 0
                                 }
                         )
+                        // 터치 제스처 수정 - 간단한 방식으로 변경
+                        .onTapGesture {
+                            // 터치 시 거북이 캐릭터와 상호작용
+                            print("Screen tapped, calling handleCharacterTouch()")
+                            gameController.handleCharacterTouch()
+                        }
                         
                         // 카메라 위치 표시
                         VStack {
                             HStack {
+                                
                                 Spacer()
                                 VStack(alignment: .trailing, spacing: 4) {
-                                    Text("Camera Position")
-                                        .font(.system(size: 14, weight: .bold))
+                                    Text(" \(challenge?.title ?? "") : \(challenge?.day ?? 1)일차")
+                                        .font(.title)
+                                        .fontWeight(.bold)
                                         .foregroundColor(.white)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Color.black.opacity(0.5))
-                                        .cornerRadius(8)
-                                    
-                                    Text("X: \(String(format: "%.2f", gameController.cameraNode?.position.x ?? 0))")
-                                        .font(.system(size: 12))
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 2)
-                                        .background(Color.black.opacity(0.5))
-                                        .cornerRadius(8)
-                                    
-                                    Text("Y: \(String(format: "%.2f", gameController.cameraNode?.position.y ?? 0))")
-                                        .font(.system(size: 12))
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 2)
-                                        .background(Color.black.opacity(0.5))
-                                        .cornerRadius(8)
-                                    
-                                    Text("Z: \(String(format: "%.2f", gameController.cameraNode?.position.z ?? 0))")
-                                        .font(.system(size: 12))
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 2)
-                                        .background(Color.black.opacity(0.5))
-                                        .cornerRadius(8)
+                                        .shadow(color: .black, radius: 2, x: 1, y: 1)
                                 }
-                                .padding(.top, 30)
-                                .padding(.trailing, 16)
+                                
                             }
+                            .padding(.top, 30)
+                            .padding(.trailing, 16)
                             Spacer()
-                        }
-                    }
-                }
-                .frame(height: UIScreen.main.bounds.height * 0.795)
-                
-                // Chat Window with bottom margin
-                VStack(spacing: 0) {
-                    // Chat content
-                    HStack(spacing: 0) {
-                        // Image (1/4 of chat window)
-                        Image(currentImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: UIScreen.main.bounds.width * 0.25)
-                            .background(Color.gray.opacity(0.2))
-                        
-                        // Text (3/4 of chat window)
-                VStack {
-                            if currentMessageIndex < messages.count {
-                                Text(messages[currentMessageIndex].text)
-                                    .font(.system(size: 30))
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .background(Color.white)
-                                    .onTapGesture {
-                                        if messages[currentMessageIndex].isClickable {
-                                            showStretchingView = true
-                                        } else {
-                                            showNextMessage()
+                            
+                            
+                            // Chat Window with bottom margin
+                            VStack(spacing: 0) {
+                                // Chat content
+                                HStack(spacing: 0) {
+                                    // Image (1/4 of chat window)
+                                    Image(currentImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: UIScreen.main.bounds.width * 0.25)
+                                        //.background(Color.gray.opacity(0.2))
+                                    
+                                    // Text (3/4 of chat window)
+                                    VStack {
+                                        if currentMessageIndex < messages.count {
+                                            Text(messages[currentMessageIndex].text)
+                                                .font(.system(size: 30))
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                .background(RoundedRectangle(cornerRadius: 15).fill(Color.white)
+                                                )
+                                                .onTapGesture {
+                                                    if messages[currentMessageIndex].isClickable {
+                                                        showStretchingView = true
+                                                    } else {
+                                                        showNextMessage()
+                                                    }
+                                                }
                                         }
                                     }
+                                    //.frame(width: UIScreen.main.bounds.width * 0.75)
+                                }
+                                .frame(height: UIScreen.main.bounds.height * 0.15)
+                                .background(RoundedRectangle(cornerRadius: 15).fill(Color.white)
+                                )  // 대화창 배경색을 흰색으로 설정
+                                
                             }
+                            Spacer().frame(height: UIScreen.main.bounds.height * 0.1)
                         }
-                        .frame(width: UIScreen.main.bounds.width * 0.75)
+                        .frame(width: UIScreen.main.bounds.width * 0.95)
+                        
+                        .onAppear {
+                            loadMessages(for: currentDay)
+                        }
+                        .onDisappear {
+                            // 화면이 사라질 때 타이머 정리
+                            //stopMoveTimer()
+                        }
+                        
                     }
-                    .frame(height: UIScreen.main.bounds.height * 0.15)
-                    .background(Color.white)  // 대화창 배경색을 흰색으로 설정
-                    
-                    // Bottom margin with green background
-                    Rectangle()
-                        .fill(Color(red: 0.4, green: 0.5, blue: 0.3))
-                        .frame(height: UIScreen.main.bounds.height * 0.03)
                 }
-            }
-            .onAppear {
-                loadMessages(for: currentDay)
-            }
-            .onDisappear {
-                // 화면이 사라질 때 타이머 정리
-                stopMoveTimer()
+                .frame(height: UIScreen.main.bounds.height * 1)
+                
+                }
+        }
+        .navigationDestination(isPresented: $showStretchingView) {
+            //Stretching()
+        }
+        //.navigationBarHidden(true)   // 이거 추가!
+        .onAppear {
+            if let firstChallenge = challenges.first {
+                if firstChallenge.day == 0 {
+                    firstChallenge.day = 1
+                }
+                challenge = firstChallenge
+            } else {
+                // 저장된 챌린지가 없으면 기본 챌린지 생성
+                let newChallenge = Challenge(title: "척추의 길", day: 1, startDate: Date(), isTodayDone: false)
+                challenge = newChallenge
             }
         }
+        
     }
     
     func loadMessages(for day: Int) {
@@ -1375,6 +1391,7 @@ struct GameView: View {
     }
     
     private func showNextMessage() {
+        var GoshowStretchingView: Bool = false
         if currentMessageIndex < messages.count {
             let message = messages[currentMessageIndex]
             currentImage = message.image
