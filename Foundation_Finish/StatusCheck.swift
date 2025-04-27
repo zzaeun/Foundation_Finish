@@ -27,7 +27,6 @@ struct StatusCheck: View {
                             .padding(.horizontal)
                         
                         Divider()
-                            .padding(.horizontal)
                             .padding(.bottom)
                         
                         ProgressView(value: 1)
@@ -43,7 +42,10 @@ struct StatusCheck: View {
                             VStack(spacing: 20) {
                                 CustomPickerView(title: "하루 평균 앉아있는 시간이 얼마나 되나요?", selection: $sittingTime, options: timeRanges)
                                     .padding(.bottom, 16)
+                                    .padding(.horizontal, 5)
+                                
                                 CustomPickerView(title: "하루 평균 스마트폰/컴퓨터 사용 시간이 얼마나 되나요?", selection: $exerciseFrequency, options: timeRanges)
+                                    .padding(.horizontal, 5)
                             }
                         }
                         .padding(.bottom, 16)
@@ -52,7 +54,7 @@ struct StatusCheck: View {
                             selectedOption: selectedStretching,
                             onSelect: { selectedStretching = $0 }
                         )
-                        .offset(x: 0)
+                        .offset(x: -1)
                         .padding(.bottom, 16)
 
                         questionSection(
@@ -60,9 +62,9 @@ struct StatusCheck: View {
                             selectedOption: selectedExercise,
                             onSelect: { selectedExercise = $0 }
                         )
-                        .offset(x: 0)
+                        .offset(x: -1)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, 20)
                     Spacer(minLength: 30)
 
                     // 버튼
@@ -102,6 +104,7 @@ struct StatusCheck: View {
                 }
                 .padding(.top, 20)
                 .padding(.bottom, 40)
+
             }
             .navigationBarBackButtonHidden(true)
             .toolbar {
@@ -136,7 +139,7 @@ struct StatusCheck: View {
                         onSelect(option)
                     }) {
                         Text(option)
-                            .frame(width: 85, height: 43)
+                            .frame(width: 83, height: 43)
                             .font(.system(size: 16))
                             .foregroundColor(.black)
                             .background(

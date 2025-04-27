@@ -94,7 +94,7 @@ struct PainSurvey: View {
             .padding(.horizontal)
 
             Divider()
-                .frame(maxWidth: .infinity)
+                .padding(.bottom)
         }
         .padding(.top, -55)
     }
