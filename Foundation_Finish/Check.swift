@@ -17,6 +17,11 @@ struct Check: View {
         formatter.dateFormat = "yyyy년 MM월 dd일"
         return formatter.string(from: birthdate)
     }
+    
+    func hideKeyboard() {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+    
 
     var body: some View {
         NavigationStack {
@@ -38,6 +43,7 @@ struct Check: View {
                             ProgressView(value: 0.33)
                                 .padding(.top, 10)
                                 .padding(.bottom, 10)
+                                .padding(.horizontal)
 
                             
                             // 닉네임
@@ -136,13 +142,13 @@ struct Check: View {
                         Text("다음")
                             .bold()
                             .foregroundColor(.white)
-                            .frame(width: 145, height: 20)
+                            .frame(width: 130, height: 20)
                             .padding()
                             .background(Color.blue)
                             .cornerRadius(10)
                             .shadow(radius: 2)
                     }
-                    .padding(.leading, 180)
+                    .padding(.leading, 193)
                     .padding(.bottom, 20)
                     .shadow(color: .blue.opacity(0.1), radius: 6, x: 0, y: 4)
 
@@ -150,6 +156,10 @@ struct Check: View {
                         .hidden()
                 }
             }
+            .simultaneousGesture( // << 여기 중요
+                    TapGesture()
+                        .onEnded { hideKeyboard() }
+                )
             // 생년월일 팝업
             .sheet(isPresented: $showDatePicker) {
                 VStack {
@@ -171,6 +181,8 @@ struct Check: View {
         }
     }
 }
+
+
 
 // PickerView 따로 분리
 struct PickerView: View {
