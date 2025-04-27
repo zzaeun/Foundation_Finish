@@ -20,7 +20,7 @@ struct StatusCheck: View {
                 VStack(alignment: .leading, spacing: 24) {
                     
                     VStack{
-                        // 상단 타이틀
+                        
                         Text("상태 진단")
                             .font(.title2)
                             .bold()
@@ -130,14 +130,12 @@ struct StatusCheck: View {
 //                .padding(.horizontal)
                 .padding(.bottom, 2)
 
-            HStack { // 여기 HStack으로 변경
+            HStack {
                 ForEach(options, id: \.self) { option in
                     Button(action: {
                         onSelect(option)
                     }) {
                         Text(option)
-//                            .frame(maxWidth: .infinity)
-//                            .frame(height: 43)
                             .frame(width: 85, height: 43)
                             .font(.system(size: 16))
                             .foregroundColor(.black)
@@ -149,13 +147,12 @@ struct StatusCheck: View {
                     }
                 }
             }
-//            .padding(.horizontal)
         }
     }
 
 }
 
-// MARK: - Custom Picker Component
+
 struct CustomPickerView: View {
     var title: String
     @Binding var selection: String
@@ -197,7 +194,7 @@ struct CustomPickerView: View {
     }
 }
 
-// MARK: - Survey Section
+
 struct SurveySection<Content: View>: View {
     let title: String
     let content: Content

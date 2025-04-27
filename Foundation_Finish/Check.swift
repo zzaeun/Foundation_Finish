@@ -18,6 +18,7 @@ struct Check: View {
         return formatter.string(from: birthdate)
     }
     
+    // 빈 화면 터치 -> 키보드 숨기기
     func hideKeyboard() {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }

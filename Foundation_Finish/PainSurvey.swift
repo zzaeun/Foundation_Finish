@@ -13,17 +13,17 @@ struct PainSurvey: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) { // ScrollView 내부 콘텐츠를 세로로 왼쪽 정렬, 간격 24로 배치
-                    titleSection // 제목("상태 진단")과 Divider를 표시하는 뷰
+                VStack(alignment: .leading, spacing: 24) {
+                    titleSection // 상태 진단과 Divider 표시
                     VStack {
                         ProgressView(value: 0.66)
                             .padding(.top, -20)
                             .padding(.horizontal)
                             .padding(.bottom)
                     }
-                    painAreaSelection // 통증 부위 선택
+                    painAreaSelection
                     if !selectedPainAreas.isEmpty { // 하나 이상의 통증 부위가 선택되었을 때만 표시
-                        painLevelSection // 선택된 통증 부위별 통증 정도 조절
+                        painLevelSection 
                     }
                 }
                 .padding()
