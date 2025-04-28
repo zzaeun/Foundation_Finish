@@ -12,7 +12,7 @@ struct StretchingCard: View {
         
             // 초록 배경 + 이미지
             ZStack {
-                Color(red: 1.0, green: 0.95, blue: 0.7)
+                Color(red: 0.9, green: 1.0, blue: 0.9)
 
 
 
