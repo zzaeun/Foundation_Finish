@@ -2,6 +2,8 @@ import SwiftUI
 import SceneKit
 
 struct StretchingView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedSegment = 0
     private let segments = ["목", "어깨", "허리", "손목"]
     
@@ -219,6 +221,19 @@ struct StretchingView: View {
                     .padding()
                     
                     Spacer()
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
                 }
             }
         }

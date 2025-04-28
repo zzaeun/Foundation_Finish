@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct StretchingFinish: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedEmotion: Emotion?
     @State private var diaryText: String = ""
     @State private var selectedDate: Date = Date()
@@ -229,6 +231,19 @@ struct StretchingFinish: View {
                 }
             } message: {
                 Text(alertMessage)
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
+                }
             }
         }
     }

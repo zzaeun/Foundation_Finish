@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct StretchingGoodView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var navigateToFinish = false
 
     var body: some View {
@@ -24,6 +26,19 @@ struct StretchingGoodView: View {
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     navigateToFinish = true
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
                 }
             }
         }
