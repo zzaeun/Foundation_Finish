@@ -47,6 +47,7 @@ struct Home: View {
                             }
                         }
                     }
+                  
                     .frame(width: 270, height: 280)
                     .offset(x: 10, y: -30)
                     
@@ -95,6 +96,7 @@ struct Home: View {
                         .frame(width: 370)
                         .padding(.horizontal)
                     }
+
                     .padding(.bottom)
                     
                     //  스트레칭 섹션
@@ -154,6 +156,7 @@ struct Home: View {
                 }
                 .offset(y: -80)
             }
+          
             //  상단 툴바
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -166,6 +169,7 @@ struct Home: View {
                     Image(systemName: "person.crop.circle")
                         .font(.system(size: 25))
                 }
+
             }
             Divider()
         }
