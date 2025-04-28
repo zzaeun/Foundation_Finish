@@ -188,6 +188,7 @@ struct Neck: View {
                 .padding()
                 
                 Spacer()
+                
             }
             .navigationBarBackButtonHidden(true)
             .toolbar {

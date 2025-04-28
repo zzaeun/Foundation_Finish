@@ -1206,7 +1206,7 @@ class SceneViewDelegate: NSObject, SCNSceneRendererDelegate {
 struct GameView: View {
     @ObservedObject private var gameController: GameController
     private let sceneDelegate: SceneViewDelegate
-    @State private var currentDay: Int = 26
+    @State private var currentDay: Int = 1
     @State private var currentMessageIndex: Int = 0
     @State private var messages: [Message] = []
     @State private var currentImage: String = "emoji_computering"
