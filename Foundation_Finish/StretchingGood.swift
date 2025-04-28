@@ -1,12 +1,17 @@
 import SwiftUI
 
 struct StretchingGoodView: View {
-    @State private var navigateToFinish = false
+    @State private var navigateToNext = false
+    var nextDestination: AnyView
+
+    init(nextDestination: AnyView = AnyView(Home())) { // 🔥 추가
+        self.nextDestination = nextDestination
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                NavigationLink(destination: StretchingFinish(), isActive: $navigateToFinish) {
+                NavigationLink(destination: nextDestination, isActive: $navigateToNext) {
                     EmptyView()
                 }
                 Image("goodRabbit")
@@ -23,12 +28,13 @@ struct StretchingGoodView: View {
             .navigationBarBackButtonHidden(true)
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    navigateToFinish = true
+                    navigateToNext = true
                 }
             }
         }
     }
 }
+
 #Preview {
     StretchingGoodView()
 }

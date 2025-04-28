@@ -10,11 +10,10 @@ import SceneKit
 
 struct Neck: View {
     @State private var selectedSegment = 0
-    
     @State private var isPlaying = true
     @State private var elapsedTime: TimeInterval = 0
     private let totalTime: TimeInterval = 30
-    
+
     @State private var timer: Timer? = nil
     @State private var animationStopTimer: Timer? = nil
 
@@ -22,7 +21,7 @@ struct Neck: View {
     @State private var cameraNode: SCNNode = SCNNode()
     @State private var modelNode: SCNNode? = nil
     @State private var isPaused = false
-    
+
     @State private var rotationAngleX: Float = 0.0
     
     @State private var showSwipeHint = true
@@ -30,23 +29,24 @@ struct Neck: View {
     
     @State private var showRestText = false
     
+    @State private var navigateToFinish = false
+
     private let instructions: [[String]] = [
-        ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."],
+        ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."]
     ]
-        
-      
+
     private var timerString: String {
         let remaining = totalTime - elapsedTime
         let minutes = Int(remaining) / 60
         let seconds = Int(remaining) % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
-     
+
     private var progress: Double {
         guard totalTime > 0 else { return 0 }
         return elapsedTime / totalTime
     }
-    
+
     private func startTimer() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
@@ -54,142 +54,147 @@ struct Neck: View {
                 elapsedTime += 1
             } else {
                 timer?.invalidate()
+                navigateToFinish = true
             }
         }
     }
-    
+
     var body: some View {
-            VStack(spacing: 16) {
-                // Segmented picker removed. Only "목" segment is shown.
-                SceneView(
-                    scene: scene,
-                    pointOfView: cameraNode,
-                    options: [.autoenablesDefaultLighting]
-                )
-                .frame(height: 550)
-                .background(Color.white)
-                .padding(.horizontal)
-                .onAppear {
-                    setupScene()
-                    loadModel()
-                    startTimer()
-                }
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            let delta = Float(value.translation.width) * 0.0008
-                            rotationAngleX += delta
-                            modelNode?.eulerAngles = SCNVector3(-1.5, rotationAngleX, 0)
-                        }
-                )
-                .overlay(
-                    Group {
-                        if showRestText {
-                            VStack {
-                                Spacer()
-                                Text("잠시 휴식")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.orange)
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 12)
-                                    .cornerRadius(8)
-                                    .offset(x:147,y:50)
-                                Spacer().frame(height: 60)
+        NavigationStack {
+            ZStack {
+                VStack(spacing: 16) {
+                    SceneView(
+                        scene: scene,
+                        pointOfView: cameraNode,
+                        options: [.autoenablesDefaultLighting]
+                    )
+                    .frame(height: 550)
+                    .background(Color.white)
+                    .padding(.horizontal)
+                    .onAppear {
+                        setupScene()
+                        loadModel()
+                        startTimer()
+                    }
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let delta = Float(value.translation.width) * 0.0008
+                                rotationAngleX += delta
+                                modelNode?.eulerAngles = SCNVector3(-1.5, rotationAngleX, 0)
                             }
-                        }
-                        if showSwipeHint {
-                            VStack {
-                                HStack {
-                                    Spacer().frame(width: 105)
-                                    Image(systemName: "hand.draw.fill")
-                                        .font(.title)
-                                        .foregroundColor(.blue)
-                                        .padding()
-                                        .offset(x: swipeHintOffset,y:150)
-                                        .opacity(1 - Double(swipeHintOffset / 200))
-                                        .animation(.easeOut(duration: 2.0).delay(0.2), value: swipeHintOffset)
-                                    
+                    )
+                    .overlay(
+                        Group {
+                            if showRestText {
+                                VStack {
+                                    Spacer()
+                                    Text("잠시 휴식")
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.orange)
+                                        .padding(.horizontal, 24)
+                                        .padding(.vertical, 12)
+                                        .cornerRadius(8)
+                                        .offset(x:147,y:50)
+                                    Spacer().frame(height: 60)
+                                }
+                            }
+                            if showSwipeHint {
+                                VStack {
+                                    HStack {
+                                        Spacer().frame(width: 105)
+                                        Image(systemName: "hand.draw.fill")
+                                            .font(.title)
+                                            .foregroundColor(.blue)
+                                            .padding()
+                                            .offset(x: swipeHintOffset, y:150)
+                                            .opacity(1 - Double(swipeHintOffset / 200))
+                                            .animation(.easeOut(duration: 2.0).delay(0.2), value: swipeHintOffset)
+                                        Spacer()
+                                    }
                                     Spacer()
                                 }
-                                Spacer()
-                            }
-                            .padding(.top, 20)
-                            .onAppear {
-                                swipeHintOffset = 0
-                                withAnimation(.easeOut(duration: 2.5).delay(0.7)) {
-                                    swipeHintOffset = 200
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                    showSwipeHint = false
+                                .padding(.top, 20)
+                                .onAppear {
+                                    swipeHintOffset = 0
+                                    withAnimation(.easeOut(duration: 2.5).delay(0.7)) {
+                                        swipeHintOffset = 200
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                        showSwipeHint = false
+                                    }
                                 }
                             }
                         }
-                    }
-                )
-                
-                HStack {
-                    Button(action: {
-                        isPlaying.toggle()
-                        if isPlaying {
-                            startTimer()
-                            startAnimationStopTimer()
-                            modelNode?.resumeAnimations()
-                        } else {
-                            timer?.invalidate()
-                            animationStopTimer?.invalidate()
-                            modelNode?.pauseAnimations()
+                    )
+
+                    HStack {
+                        Button(action: {
+                            isPlaying.toggle()
+                            if isPlaying {
+                                startTimer()
+                                startAnimationStopTimer()
+                                modelNode?.resumeAnimations()
+                            } else {
+                                timer?.invalidate()
+                                animationStopTimer?.invalidate()
+                                modelNode?.pauseAnimations()
+                            }
+                        }) {
+                            Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                .font(.system(size: 32))
+                                .padding(.trailing,3)
                         }
-                    }) {
-                        Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                            .font(.system(size: 32))
-                            .padding(.trailing,3)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(segmentTitle(for: 0))
-                            .font(.title3)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(segmentTitle(for: 0))
+                                .font(.title3)
+                                .bold()
+                                .fontWeight(.regular)
+                            Text("화면을 드래그해 자세를 다양한 각도에서 확인해보세요.")
+                                .font(.caption2)
+                                .fontWeight(.regular)
+                                .foregroundColor(.gray)
+                        }
+
+                        Spacer()
+
+                        Text(timerString)
+                            .font(.body)
                             .bold()
-                            .fontWeight(.regular)
-                        Text("화면을 드래그해 자세를 다양한 각도에서 확인해보세요.")
-                            .font(.caption2)
-                            .fontWeight(.regular)
+                            .monospacedDigit()
                             .foregroundColor(.gray)
                     }
-                    
-                    Spacer()
-                    
-                    Text(timerString)
-                        .font(.body)
-                        .bold()
-                        .monospacedDigit()
-                        .foregroundColor(.gray)
-                }
-                .padding(.horizontal)
-                
-                ProgressView(value: progress)
                     .padding(.horizontal)
-                
-                VStack(alignment:.leading, spacing: 20) {
-                    ForEach(instructions[0], id: \.self) { line in
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.blue)
-                            Text(line)
-                                .font(.caption)
-                                .fontWeight(.regular)
-                            Spacer()
+
+                    ProgressView(value: progress)
+                        .padding(.horizontal)
+
+                    VStack(alignment: .leading, spacing: 20) {
+                        ForEach(instructions[0], id: \ .self) { line in
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.blue)
+                                Text(line)
+                                    .font(.caption)
+                                    .fontWeight(.regular)
+                                Spacer()
+                            }
                         }
                     }
+                    .padding()
+
+                    Spacer()
                 }
-                .padding()
                 
-                Spacer()
+                NavigationLink(destination: StretchingGoodView(nextDestination: AnyView(Home())), isActive: $navigateToFinish) {
+                    EmptyView()
+                }
             }
-
-
+        }
     }
-    
+
     private func setupScene() {
         scene.background.contents = UIColor.white
 
@@ -252,7 +257,7 @@ struct Neck: View {
             }
         }
     }
-    
+
     private func startAnimationStopTimer() {
         animationStopTimer?.invalidate()
         let stopTime: TimeInterval = 17.0
@@ -267,9 +272,9 @@ struct Neck: View {
     }
 }
 
-    private func segmentTitle(for segment: Int) -> String {
-        return "어깨올림근"
-    }
+private func segmentTitle(for segment: Int) -> String {
+    return "어깨올림근"
+}
 
 #Preview {
     Neck()
