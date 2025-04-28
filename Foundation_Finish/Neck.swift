@@ -9,6 +9,8 @@ import SwiftUI
 import SceneKit
 
 struct Neck: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedSegment = 0
     
     @State private var isPlaying = true
@@ -29,6 +31,7 @@ struct Neck: View {
     @State private var swipeHintOffset: CGFloat = 0
     
     @State private var showRestText = false
+    
     
     private let instructions: [[String]] = [
         ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."],
@@ -185,8 +188,21 @@ struct Neck: View {
                 .padding()
                 
                 Spacer()
+                
             }
-
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                            .imageScale(.large)
+                            .padding(6)
+                    }
+                }
+            }
 
     }
     

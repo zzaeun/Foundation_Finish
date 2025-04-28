@@ -9,6 +9,8 @@ import SwiftUI
 import SceneKit
 
 struct Shoulder: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedSegment = 0
     
     @State private var isPlaying = true
@@ -185,7 +187,19 @@ struct Shoulder: View {
                 
                 Spacer()
             }
-
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                            .imageScale(.large)
+                            .padding(6)
+                    }
+                }
+            }
 
     }
     

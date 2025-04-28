@@ -2,6 +2,8 @@ import SwiftUI
 import SceneKit
 
 struct StretchingView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedSegment = 0
     private let segments = ["목", "어깨", "허리", "손목"]
     
@@ -31,7 +33,7 @@ struct StretchingView: View {
         ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."],
         ["어깨를 천천히 위로 올렸다가 내리세요.", "양팔을 뒤로 쭉 펴세요.", "깊게 숨을 쉬면서 10초간 유지하세요."],
         ["허리를 곧게 펴고, 상체를 천천히 앞으로 숙이세요.", "손끝이 발끝을 향하도록 하세요.", "등과 허리 뒤쪽이 당기는 느낌에 집중하세요."],
-        ["무릎을 굽혔다 폈다 반복하세요.", "한쪽 무릎을 당겨서 가슴 쪽으로 끌어올리세요.", "10초간 유지한 후 반대쪽도 반복하세요."]
+        ["팔을 뻗고 손바닥이 바깥을 향하도록 펴주세요.", "손가락이 몸쪽을 향하도록 손등을 부드럽게 꺾어주세요.", "반대손으로 손바닥을 잡고 15~30초 동안 천천히 늘려주세요."]
     ]
         
       
@@ -94,7 +96,7 @@ struct StretchingView: View {
                         elapsedTime = Double(newValue) * 30
                         loadModel()
                     }
-                    
+                    .padding(.top, 35)
                     SceneView(
                         scene: scene,
                         pointOfView: cameraNode,
@@ -219,6 +221,19 @@ struct StretchingView: View {
                     .padding()
                     
                     Spacer()
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
                 }
             }
         }
