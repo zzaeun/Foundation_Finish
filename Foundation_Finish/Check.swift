@@ -44,7 +44,7 @@ struct Check: View {
                             ProgressView(value: 0.33)
                                 .padding(.top, 10)
                                 .padding(.bottom, 10)
-                                .padding(.horizontal)
+                                .padding(.horizontal, 13)
 
                             
                             // 닉네임
@@ -52,6 +52,7 @@ struct Check: View {
                                     .font(.system(size: 17))
                                     .foregroundColor(.black)
                                     .padding(.leading, 5)
+                                    .padding(.horizontal, 2)
                                 
                             TextField("닉네임을 입력해주세요", text: $nickname)
                                 .font(.system(size: 15))
@@ -62,6 +63,7 @@ struct Check: View {
                                 .cornerRadius(10)
                                 .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
                                 .padding(.bottom, 35)
+                                .padding(.horizontal, 12)
 
                             
                             // 생년월일
@@ -69,7 +71,7 @@ struct Check: View {
                                 .font(.system(size: 17))
                                 .foregroundColor(.black)
                                 .padding(.leading, 3)
-
+                                .padding(.horizontal, 2)
                             Button(action: {
                                 showDatePicker = true
                             }) {
@@ -88,13 +90,14 @@ struct Check: View {
                                 .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2)
                             }
                             .padding(.bottom, 35)
+                            .padding(.horizontal, 12)
                             
                             // 성별
                             Text("성별")
                                 .font(.system(size: 17))
                                 .foregroundColor(.black)
                                 .padding(.leading, 3)
-
+                                .padding(.horizontal, 2)
                             HStack(spacing: 0) {
                                 ForEach(GenderRanges.indices, id: \.self) { index in
                                     let gender = GenderRanges[index]
@@ -109,7 +112,7 @@ struct Check: View {
                                                 RoundedRectangle(cornerRadius: 10)
                                                                     .fill(selectedGender == gender ? Color.blue : Color.clear)
                                                             )
-                                            .foregroundColor(selectedGender == gender ? .white : .black)
+                                            .foregroundColor(selectedGender == gender ? .white : .gray)
                                     }
                                     
 //                                    if index < GenderRanges.count - 1 {
@@ -129,6 +132,7 @@ struct Check: View {
                                     .fill(Color.white)
                             )
                             .padding(.bottom, 35)
+                            .padding(.horizontal, 14)
 
 
                             
@@ -160,7 +164,7 @@ struct Check: View {
                         .hidden()
                 }
             }
-            .simultaneousGesture( // << 여기 중요
+            .simultaneousGesture( // 빈 화면 선택시 키보드 사라지게
                     TapGesture()
                         .onEnded { hideKeyboard() }
                 )
@@ -200,6 +204,7 @@ struct PickerView: View {
                 .font(.system(size: 17))
                 .foregroundColor(.black)
                 .padding(.leading, 2)
+                .padding(.horizontal, 2)
 
             Menu {
                 ForEach(options, id: \.self) { option in
@@ -221,6 +226,7 @@ struct PickerView: View {
                 .background(Color.white)
                 .cornerRadius(10)
                 .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
+                .padding(.horizontal, 14)
             }
         }
     }

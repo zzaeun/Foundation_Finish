@@ -1216,6 +1216,7 @@ struct GameView: View {
     
     @Query var challenges: [Challenge]   // ← 저장된 Challenge 배열을 자동으로 가져옴
 
+    @Environment(\.presentationMode) var presentationMode
     
     init() {
         let controller = GameController(currentDay: 1)  // currentDay 전달
@@ -1353,7 +1354,19 @@ struct GameView: View {
                     
             }
         }
-        
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.white)
+                        .imageScale(.large)
+                        .padding(6)
+                }
+            }
+        }
     }
     
     func loadMessages(for day: Int) {
