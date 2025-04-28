@@ -13,16 +13,20 @@ struct SplashScreen: View {
             Text("무심코 지나친 내 몸에게 오늘은 인사해요!")
                 .bold()
 //                .font(.title3)
-                .font(.system(size: 26))
+                .font(.system(size: 30))
                 .offset(x: 0, y: 120)
                 .frame(width: 300, height: 120)
 //                .padding(.top, 120)
             
             Image("SplashScreen")
                 .resizable()
-                .frame(width: 353, height: 540)
+                .frame(width: 345.6, height: 538)
                 .padding(.leading, 90)
                 .padding(.top, 220)
         }
     }
+}
+
+#Preview {
+    SplashScreen()
 }
