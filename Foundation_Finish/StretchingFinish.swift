@@ -21,6 +21,9 @@ struct StretchingFinish: View {
     @State private var showSheet = false
     @State private var navigateToHome = false
     
+    //저장 후 알림버튼 확인 누르면 마이페이지로
+    @State private var navigateToMyPage = false
+    
     private var formattedDateTime: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -81,15 +84,6 @@ struct StretchingFinish: View {
                         .foregroundColor(.black)
 //                        .opacity(0.5)
                     
-                    // 날짜 선택
-//                    DatePicker(
-//                        "일기 날짜",
-//                        selection: $selectedDate,
-//                        displayedComponents: [.date]
-//                    )
-//                    .datePickerStyle(.compact)
-//                    .padding()
-//                    .colorScheme(.dark)
                     
                     // 감정 선택
                     Text("오늘 컨디션은 어땠나요?")
@@ -154,6 +148,7 @@ struct StretchingFinish: View {
                             .foregroundColor(.gray)
 //                    }
                     .padding(.horizontal)
+                    .offset(y: 10)
                     
                     // 일기 작성
                     TextEditor(text: $diaryText)
@@ -200,7 +195,8 @@ struct StretchingFinish: View {
                                 .font(.system(size: 18))
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
+//                                .frame(maxWidth: .infinity)
+                                .frame(width: 340)
                                 .padding(.vertical, 20)
                                 .background(Color.blue)
                                 .cornerRadius(15)
@@ -208,12 +204,19 @@ struct StretchingFinish: View {
                         }
                         .disabled(selectedEmotion == nil || diaryText.isEmpty)
                         
-                        Button("나중에 하기") {
+                        NavigationLink(destination: Home()
+                            .navigationBarBackButtonHidden(true)) {
+                            Text("나중에 하기")
+                                .fontWeight(.bold)
+//                                .padding()
+                                .foregroundColor(.gray) // 버튼처럼 색 입히기
                         }
-                        
-                        .fontWeight(.bold)
+
                     }
-                    .padding()
+                    NavigationLink(destination: MyPage().navigationBarBackButtonHidden(true), isActive: $navigateToMyPage) {
+                        EmptyView()
+                    }
+//                    .padding()
                 }
                 .padding()
             }
@@ -221,7 +224,8 @@ struct StretchingFinish: View {
             .navigationBarTitleDisplayMode(.inline)
             .alert("알림", isPresented: $showAlert) {
                 Button("확인") {
-                    dismiss()
+//                    dismiss()
+                    navigateToMyPage = true // 확인 누르면 true
                 }
             } message: {
                 Text(alertMessage)

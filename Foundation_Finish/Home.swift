@@ -180,7 +180,6 @@ struct Home: View {
                         .resizable()
                         .frame(width: 70, height: 60)
                 }
-
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: MyPage().environmentObject(DiaryManager.shared)) {
                         Image(systemName: "person.crop.circle")
@@ -189,7 +188,6 @@ struct Home: View {
                         
                     }
                 }
-
             }
         }
     }
