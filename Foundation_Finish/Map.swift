@@ -1070,9 +1070,9 @@ class GameController: NSObject, ObservableObject {
     
     // standing 모델로 변경
     private func changeToStandingModel() {
-        guard let player = playerNode else { 
+        guard let player = playerNode else {
             print("Cannot change to standing model: player is nil")
-            return 
+            return
         }
         
         print("Changing to standing model")
@@ -1123,9 +1123,9 @@ class GameController: NSObject, ObservableObject {
     
     // 캐릭터 터치 처리 함수 추가
     func handleCharacterTouch() {
-        guard let player = playerNode else { 
+        guard let player = playerNode else {
             print("Error: playerNode is nil")
-            return 
+            return
         }
         
         print("handleCharacterTouch called")
@@ -1271,10 +1271,10 @@ struct GameView: View {
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
                                         .shadow(color: .black, radius: 2, x: 1, y: 1)
+                                        .padding(.top, 70)
                                 }
                                 
                             }
-                            .padding(.top, 30)
                             .padding(.trailing, 16)
                             Spacer()
                             
@@ -1348,6 +1348,8 @@ struct GameView: View {
                 // 저장된 챌린지가 없으면 기본 챌린지 생성
                 let newChallenge = Challenge(title: "척추의 길", day: 1, startDate: Date(), isTodayDone: false)
                 challenge = newChallenge
+                    
+                    
             }
         }
         
