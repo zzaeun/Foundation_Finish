@@ -233,19 +233,7 @@ struct StretchingFinish: View {
                 Text(alertMessage)
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
-                        .imageScale(.large)
-                        .padding(6)
-                }
-            }
-        }
+        
     }
 }
 
