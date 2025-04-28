@@ -16,9 +16,10 @@ struct StretchingFinish: View {
     @State private var alertMessage = ""
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var diaryManager: DiaryManager
-    
+
     //팝업형식용
     @State private var showSheet = false
+    @State private var navigateToHome = false
     
     private var formattedDateTime: String {
         let formatter = DateFormatter()
@@ -30,6 +31,9 @@ struct StretchingFinish: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                NavigationLink(destination: Home(), isActive: $navigateToHome) {
+                    EmptyView()
+                }
                 Color.black.opacity(0.9)
                 Color.white
                     .ignoresSafeArea()
@@ -167,6 +171,7 @@ struct StretchingFinish: View {
                                         .foregroundColor(.gray.opacity(0.8))
                                         .padding(.horizontal, 5)
                                         .padding()
+                                        .offset(y:8)
                                         .allowsHitTesting(false)
                                 }
                             }
@@ -204,10 +209,8 @@ struct StretchingFinish: View {
                         .disabled(selectedEmotion == nil || diaryText.isEmpty)
                         
                         Button("나중에 하기") {
-                            // TODO: 홈 화면으로 이동하는 코드 추가 예정
-                            // dismiss()
                         }
-                        .disabled(selectedEmotion == nil || diaryText.isEmpty)
+                        
                         .fontWeight(.bold)
                     }
                     .padding()

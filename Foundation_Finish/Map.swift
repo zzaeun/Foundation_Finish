@@ -1336,6 +1336,7 @@ struct GameView: View {
         }
         .navigationDestination(isPresented: $showStretchingView) {
             StretchingView()
+                .navigationTitle("척추의 길")
         }
         //.navigationBarHidden(true)   // 이거 추가!
         .onAppear {
