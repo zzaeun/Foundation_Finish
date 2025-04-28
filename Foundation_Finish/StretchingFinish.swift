@@ -21,7 +21,7 @@ struct StretchingFinish: View {
     @State private var showSheet = false
     
     //저장 후 알림버튼 확인 누르면 마이페이지로
-    @State private var navigateToHome = false
+    @State private var navigateToMyPage = false
     
     private var formattedDateTime: String {
         let formatter = DateFormatter()
@@ -80,15 +80,6 @@ struct StretchingFinish: View {
                         .foregroundColor(.black)
 //                        .opacity(0.5)
                     
-                    // 날짜 선택
-//                    DatePicker(
-//                        "일기 날짜",
-//                        selection: $selectedDate,
-//                        displayedComponents: [.date]
-//                    )
-//                    .datePickerStyle(.compact)
-//                    .padding()
-//                    .colorScheme(.dark)
                     
                     // 감정 선택
                     Text("오늘 컨디션은 어땠나요?")
@@ -199,7 +190,8 @@ struct StretchingFinish: View {
                                 .font(.system(size: 18))
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
+//                                .frame(maxWidth: .infinity)
+                                .frame(width: 340)
                                 .padding(.vertical, 20)
                                 .background(Color.blue)
                                 .cornerRadius(15)
@@ -211,11 +203,14 @@ struct StretchingFinish: View {
                             .navigationBarBackButtonHidden(true)) {
                             Text("나중에 하기")
                                 .fontWeight(.bold)
-                                .padding()
+//                                .padding()
                                 .foregroundColor(.gray) // 버튼처럼 색 입히기
                         }
                     }
-                    .padding()
+                    NavigationLink(destination: MyPage().navigationBarBackButtonHidden(true), isActive: $navigateToMyPage) {
+                        EmptyView()
+                    }
+//                    .padding()
                 }
                 .padding()
             }
@@ -224,7 +219,7 @@ struct StretchingFinish: View {
             .alert("알림", isPresented: $showAlert) {
                 Button("확인") {
 //                    dismiss()
-                    navigateToHome = true // 확인 누르면 true
+                    navigateToMyPage = true // 확인 누르면 true
                 }
             } message: {
                 Text(alertMessage)
