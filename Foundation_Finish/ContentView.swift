@@ -9,14 +9,21 @@ import SwiftUI
 
 struct ContentView: View {
     @State var isActive = false         // Splash 화면을 보여준다는 뜻
-    
+    @State private var randomIndex = Int.random(in: 0..<3)
+       
+       
+       let splashScreens: [AnyView] = [
+           AnyView(SplashScreen()),
+           AnyView(SplashScreen2()),
+           AnyView(SplashScreen3())
+       ]
     var body: some View {
         Group {
             if isActive {
                 Home()
             }
             else {
-                SplashScreen()          // isActive를 false로 설정했으니까 앱 실행하면 SplashScreen 등장
+                splashScreens[randomIndex]          // isActive를 false로 설정했으니까 앱 실행하면 SplashScreen 등장
             }
         }
         

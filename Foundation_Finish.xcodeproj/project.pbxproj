@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F5C055822DBCDAC800791E72 /* RealityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5C055812DBCDAC800791E72 /* RealityKit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		3A3C3C232DBA1215005C0A3C /* Foundation_Finish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Foundation_Finish.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5C055812DBCDAC800791E72 /* RealityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.4.sdk/System/Library/Frameworks/RealityKit.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5C055822DBCDAC800791E72 /* RealityKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +39,7 @@
 			isa = PBXGroup;
 			children = (
 				3A3C3C252DBA1215005C0A3C /* Foundation_Finish */,
+				F5C055802DBCDAC700791E72 /* Frameworks */,
 				3A3C3C242DBA1215005C0A3C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +50,14 @@
 				3A3C3C232DBA1215005C0A3C /* Foundation_Finish.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F5C055802DBCDAC700791E72 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F5C055812DBCDAC800791E72 /* RealityKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
