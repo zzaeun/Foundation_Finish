@@ -9,6 +9,8 @@ import SwiftUI
 import SceneKit
 
 struct Neck: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedSegment = 0
     @State private var isPlaying = true
     @State private var elapsedTime: TimeInterval = 0
@@ -193,6 +195,7 @@ struct Neck: View {
                 }
             }
         }
+
     }
 
     private func setupScene() {

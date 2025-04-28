@@ -1348,11 +1348,19 @@ struct GameView: View {
                 challenge = firstChallenge
             } else {
                 // 저장된 챌린지가 없으면 기본 챌린지 생성
-                let newChallenge = Challenge(title: "척추의 길", day: 1, startDate: Date(), isTodayDone: false)
+                let newChallenge = Challenge(title: "척추의 길", day: currentDay, startDate: Date(), isTodayDone: false)
                 challenge = newChallenge
                     
                     
             }
+        }
+        // 코드 추가하고 currentday = 1에서 다른 날로 바꾸면 멘트 바뀜 (?일차는 위 Cheallenge(day: ?) 여기 숫자 바꾸면 됨)
+        .onChange (of: challenges) { newChallenges in
+            // challenges가 바뀔 때마다 자동으로 반영
+            if let firstChallenge = newChallenges.first {
+                challenge = firstChallenge
+            }
+            
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {

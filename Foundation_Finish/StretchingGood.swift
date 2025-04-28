@@ -1,12 +1,14 @@
 import SwiftUI
 
 struct StretchingGoodView: View {
+
     @State private var navigateToNext = false
     var nextDestination: AnyView
 
     init(nextDestination: AnyView = AnyView(Home())) { // 🔥 추가
         self.nextDestination = nextDestination
     }
+
 
     var body: some View {
         NavigationStack {
@@ -29,6 +31,19 @@ struct StretchingGoodView: View {
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     navigateToNext = true
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
                 }
             }
         }

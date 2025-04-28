@@ -12,6 +12,7 @@ struct Foundation_FinishApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(DiaryManager.shared)
         }
     }
 }
