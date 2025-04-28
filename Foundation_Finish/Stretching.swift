@@ -108,13 +108,13 @@ struct StretchingView: View {
                             VStack {
                                 Spacer()
                                 Text("잠시 휴식")
-                                    .font(.largeTitle)
+                                    .font(.title3)
                                     .fontWeight(.bold)
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.gray)
                                     .padding(.horizontal, 24)
                                     .padding(.vertical, 12)
                                     .cornerRadius(8)
-                                    .offset(y:-300)
+                                    .offset(x:150,y:50)
                                 Spacer().frame(height: 60)
                             }
                         }
