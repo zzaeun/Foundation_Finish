@@ -83,7 +83,7 @@ struct StatusCheck: View {
                                 .shadow(radius: 0.1)
                                 .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                         }
-                        .padding(.leading, 9)
+                        .padding(.leading, 20)
                         
                         Button(action: {
                             showHome = true
@@ -98,7 +98,7 @@ struct StatusCheck: View {
                                 .shadow(radius: 2)
                                 .shadow(color: .blue.opacity(0.2), radius: 4, x: 0, y: 2)
                         }
-                        .padding(.leading, 9)
+                        .padding(.leading, -1)
                     }
                     .padding(.horizontal)
                     .padding(.top, 73)
@@ -114,7 +114,7 @@ struct StatusCheck: View {
                         presentationMode.wrappedValue.dismiss()
                     }) {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.white)
                             .imageScale(.large)
                             .padding(6)
                     }
@@ -131,10 +131,12 @@ struct StatusCheck: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
                 .font(.system(size: 16))
-//                .padding(.horizontal)
+                .offset(x: 1)
                 .padding(.bottom, 2)
 
             HStack {
+                Spacer(minLength: 2)
+                
                 ForEach(options, id: \.self) { option in
                     Button(action: {
                         onSelect(option)
@@ -142,7 +144,7 @@ struct StatusCheck: View {
                         Text(option)
                             .frame(width: 83, height: 43)
                             .font(.system(size: 16))
-                            .foregroundColor(.black)
+                            .foregroundColor(selectedOption == option ? .white : .black)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(selectedOption == option ? Color.blue.opacity(0.8) : Color.white)
@@ -152,6 +154,7 @@ struct StatusCheck: View {
                 }
             }
         }
+        .padding(.horizontal, 12)
     }
 
 }
@@ -167,6 +170,7 @@ struct CustomPickerView: View {
             Text(title)
                 .font(.system(size: 16))
                 .foregroundColor(.black)
+                .offset(x: -6)
 
             Menu {
                 ForEach(options, id: \.self) { option in
@@ -195,6 +199,7 @@ struct CustomPickerView: View {
                 )
             }
         }
+        .padding(.horizontal, 12)
     }
 }
 

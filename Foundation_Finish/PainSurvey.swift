@@ -72,7 +72,7 @@ struct PainSurvey: View {
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                         .imageScale(.large)
                         .padding(6)
                 }
@@ -106,6 +106,7 @@ struct PainSurvey: View {
                 Text("통증 부위 선택")
                     .font(.system(size: 18))
                     .padding(.leading)
+                    .bold()
                 Text("(중복 선택 가능)")
                     .offset(x: -5)
                     .font(.system(size: 16))
@@ -189,12 +190,12 @@ struct PainSurvey: View {
                                     Text("약함")
                                         .frame(width: geometry.size.width / 3, alignment: .leading)
                                         .offset(x: 15)
-                                    Text("보통")
-                                        .frame(width: geometry.size.width / 3, alignment: .center)
-                                        .offset(x: -12)
+//                                    Text("보통")
+//                                        .frame(width: geometry.size.width / 3, alignment: .center)
+//                                        .offset(x: -12)
                                     Text("심함")
                                         .frame(width: geometry.size.width / 3, alignment: .trailing)
-                                        .offset(x: -20)
+                                        .offset(x: 100)
                                 }
                                 .font(.caption) // 작은 글씨 스타일
                                 .foregroundColor(.gray)
@@ -219,7 +220,7 @@ struct PainAreaButton: View {
             isSelected.toggle() // 버튼 탭 시 선택 상태 토글
         }) {
             Text(title)
-                .font(.system(size: 17, weight: .medium))
+                .font(.system(size: 17))
                 .padding(.vertical, 10)
                 .frame(width: 166, height: 55)
                 .background(isSelected ? Color.blue : Color.white)

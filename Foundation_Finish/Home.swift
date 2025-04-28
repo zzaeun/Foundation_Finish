@@ -12,7 +12,7 @@ struct Home: View {
 
                 HStack(alignment: .bottom) {
                     
-                    Text("Hello, User!")
+                    Text("Hello, 돌비!")
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
                         .background(Color.blue)
@@ -36,7 +36,7 @@ struct Home: View {
                             
                             let rotateX = simd_quatf(angle: -.pi/2 - .pi/30, axis: SIMD3<Float>(1, 0, 0))
                             let rotateY = simd_quatf(angle: .pi/2 + .pi/7, axis: SIMD3<Float>(0, 1, 0))
-                            let rotateZ = simd_quatf(angle: -.pi/37, axis: SIMD3<Float>(-2, -2, 1)) // ➔ z축 회전 추가 
+                            let rotateZ = simd_quatf(angle: -.pi/37, axis: SIMD3<Float>(-2, -2, 1)) // ➔ z축 회전 추가
                             
                             entity.orientation = rotateZ * rotateY * rotateX
                             
@@ -143,17 +143,21 @@ struct Home: View {
                         // 선택된 부위에 따라 StretchingCard 표시
                         switch selectedBodyPart {
                         case "목":
-                            StretchingCard(
-                                imageName: "목스트레칭",
-                                title: "거북목 스트레칭",
-                                description: "현대인의 고질병, 거북목 타파하기!"
-                            )
+                            NavigationLink(destination: Neck().navigationTitle("목 스트레칭")) {
+                                StretchingCard(
+                                    imageName: "목스트레칭",
+                                    title: "거북목 스트레칭",
+                                    description: "현대인의 고질병, 거북목 타파하기!"
+                                )
+                            }
                         case "어깨":
-                            StretchingCard(
-                                imageName: "어깨스트레칭",
-                                title: "어깨 풀기",
-                                description: "굳은 어깨를 부드럽게 풀어봐요!"
-                            )
+                            NavigationLink(destination: Shoulder().navigationTitle("어깨 스트레칭")) {
+                                StretchingCard(
+                                    imageName: "어깨스트레칭",
+                                    title: "어깨 풀기",
+                                    description: "굳은 어깨를 부드럽게 풀어봐요!"
+                                )
+                            }
                         case "허리":
                             StretchingCard(
                                 imageName: "허리스트레칭",
@@ -172,16 +176,18 @@ struct Home: View {
             //  상단 툴바
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Image("아이콘_배경x")
+                    Image("icon_nobackground")
                         .resizable()
                         .frame(width: 70, height: 60)
                 }
-
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Image(systemName: "person.crop.circle")
-                        .font(.system(size: 25))
+                    NavigationLink(destination: MyPage().environmentObject(DiaryManager.shared)) {
+                        Image(systemName: "person.crop.circle")
+                            .font(.system(size: 25))
+                            .foregroundColor(.black)
+                        
+                    }
                 }
-
             }
         }
     }
