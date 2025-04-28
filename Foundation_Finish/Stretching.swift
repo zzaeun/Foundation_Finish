@@ -24,6 +24,9 @@ struct StretchingView: View {
     
     @State private var showRestText = false
     
+    @State private var navigateToGood = false
+    @State private var navigateToFinish = false
+    
     private let instructions: [[String]] = [
         ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."],
         ["어깨를 천천히 위로 올렸다가 내리세요.", "양팔을 뒤로 쭉 펴세요.", "깊게 숨을 쉬면서 10초간 유지하세요."],
@@ -61,152 +64,163 @@ struct StretchingView: View {
                 }
             } else {
                 timer?.invalidate()
+                navigateToGood = true
             }
         }
     }
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 16) {
-                Picker("", selection: $selectedSegment) {
-                    ForEach(0..<segments.count, id: \.self) {
-                        Text(segments[$0])
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(.horizontal)
-                .padding(.vertical,8)
-                .onChange(of: selectedSegment) { newValue in
-                    elapsedTime = Double(newValue) * 30
-                    loadModel()
-                }
+            ZStack {
+                NavigationLink(destination: StretchingGoodView()
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            navigateToFinish = true
+                        }
+                    }, isActive: $navigateToGood) { EmptyView() }
                 
-                SceneView(
-                    scene: scene,
-                    pointOfView: cameraNode,
-                    options: [.autoenablesDefaultLighting]
-                )
-                .frame(height: 450)
-                .background(Color.white)
-                .padding(.horizontal)
-                .onAppear {
-                    setupScene()
-                    loadModel()
-                    startTimer()
-                }
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            let delta = Float(value.translation.width) * 0.0008
-                            rotationAngleX += delta
-                            modelNode?.eulerAngles = SCNVector3(-1.5, rotationAngleX, 0)
+                NavigationLink(destination: StretchingFinish(), isActive: $navigateToFinish) { EmptyView() }
+                
+                VStack(spacing: 16) {
+                    Picker("", selection: $selectedSegment) {
+                        ForEach(0..<segments.count, id: \.self) {
+                            Text(segments[$0])
                         }
-                )
-                .overlay(
-                    Group {
-                        if showRestText {
-                            VStack {
-                                Spacer()
-                                Text("잠시 휴식")
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.gray)
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 12)
-                                    .cornerRadius(8)
-                                    .offset(x:150,y:50)
-                                Spacer().frame(height: 60)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.horizontal)
+                    .padding(.vertical,8)
+                    .onChange(of: selectedSegment) { newValue in
+                        elapsedTime = Double(newValue) * 30
+                        loadModel()
+                    }
+                    
+                    SceneView(
+                        scene: scene,
+                        pointOfView: cameraNode,
+                        options: [.autoenablesDefaultLighting]
+                    )
+                    .frame(height: 450)
+                    .background(Color.white)
+                    .padding(.horizontal)
+                    .onAppear {
+                        setupScene()
+                        loadModel()
+                        startTimer()
+                    }
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let delta = Float(value.translation.width) * 0.0008
+                                rotationAngleX += delta
+                                modelNode?.eulerAngles = SCNVector3(-1.5, rotationAngleX, 0)
                             }
-                        }
-                        if showSwipeHint {
-                            VStack {
-                                HStack {
-                                    Spacer().frame(width: 105)
-                                    Image(systemName: "hand.draw.fill")
-                                        .font(.title)
-                                        .foregroundColor(.blue)
-                                        .padding()
-                                        .offset(x: swipeHintOffset,y:150)
-                                        .opacity(1 - Double(swipeHintOffset / 200))
-                                        .animation(.easeOut(duration: 2.0).delay(0.2), value: swipeHintOffset)
-                                    
+                    )
+                    .overlay(
+                        Group {
+                            if showRestText {
+                                VStack {
+                                    Spacer()
+                                    Text("잠시 휴식")
+                                        .font(.title3)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.gray)
+                                        .padding(.horizontal, 24)
+                                        .padding(.vertical, 12)
+                                        .cornerRadius(8)
+                                        .offset(x:150,y:50)
+                                    Spacer().frame(height: 60)
+                                }
+                            }
+                            if showSwipeHint {
+                                VStack {
+                                    HStack {
+                                        Spacer().frame(width: 105)
+                                        Image(systemName: "hand.draw.fill")
+                                            .font(.title)
+                                            .foregroundColor(.blue)
+                                            .padding()
+                                            .offset(x: swipeHintOffset,y:150)
+                                            .opacity(1 - Double(swipeHintOffset / 200))
+                                            .animation(.easeOut(duration: 2.0).delay(0.2), value: swipeHintOffset)
+                                        
+                                        Spacer()
+                                    }
                                     Spacer()
                                 }
-                                Spacer()
-                            }
-                            .padding(.top, 20)
-                            .onAppear {
-                                swipeHintOffset = 0
-                                withAnimation(.easeOut(duration: 2.5).delay(0.7)) {
-                                    swipeHintOffset = 200
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                    showSwipeHint = false
+                                .padding(.top, 20)
+                                .onAppear {
+                                    swipeHintOffset = 0
+                                    withAnimation(.easeOut(duration: 2.5).delay(0.7)) {
+                                        swipeHintOffset = 200
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                        showSwipeHint = false
+                                    }
                                 }
                             }
                         }
-                    }
-                )
-                
-                HStack {
-                    Button(action: {
-                        isPlaying.toggle()
-                        if isPlaying {
-                            startTimer()
-                            startAnimationStopTimer()
-                            modelNode?.resumeAnimations()
-                        } else {
-                            timer?.invalidate()
-                            animationStopTimer?.invalidate()
-                            modelNode?.pauseAnimations()
-                        }
-                    }) {
-                        Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                            .font(.system(size: 32))
-                            .padding(.trailing,3)
-                    }
+                    )
                     
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(segmentTitle(for: selectedSegment))
-                            .font(.title3)
+                    HStack {
+                        Button(action: {
+                            isPlaying.toggle()
+                            if isPlaying {
+                                startTimer()
+                                startAnimationStopTimer()
+                                modelNode?.resumeAnimations()
+                            } else {
+                                timer?.invalidate()
+                                animationStopTimer?.invalidate()
+                                modelNode?.pauseAnimations()
+                            }
+                        }) {
+                            Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                .font(.system(size: 32))
+                                .padding(.trailing,3)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(segmentTitle(for: selectedSegment))
+                                .font(.title3)
+                                .bold()
+                                .fontWeight(.regular)
+                            Text("화면을 드래그해 자세를 다양한 각도에서 확인해보세요.")
+                                .font(.caption2)
+                                .fontWeight(.regular)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Spacer()
+                        
+                        Text(timerString)
+                            .font(.body)
                             .bold()
-                            .fontWeight(.regular)
-                        Text("화면을 드래그해 자세를 다양한 각도에서 확인해보세요.")
-                            .font(.caption2)
-                            .fontWeight(.regular)
+                            .monospacedDigit()
                             .foregroundColor(.gray)
                     }
-                    
-                    Spacer()
-                    
-                    Text(timerString)
-                        .font(.body)
-                        .bold()
-                        .monospacedDigit()
-                        .foregroundColor(.gray)
-                }
-                .padding(.horizontal)
-                
-                ProgressView(value: progress)
                     .padding(.horizontal)
-                
-                VStack(alignment:.leading, spacing: 20) {
-                    ForEach(instructions[selectedSegment], id: \.self) { line in
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.blue)
-                            Text(line)
-                                .font(.caption)
-                                .fontWeight(.regular)
-                            Spacer()
+                    
+                    ProgressView(value: progress)
+                        .padding(.horizontal)
+                    
+                    VStack(alignment:.leading, spacing: 20) {
+                        ForEach(instructions[selectedSegment], id: \.self) { line in
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.blue)
+                                Text(line)
+                                    .font(.caption)
+                                    .fontWeight(.regular)
+                                Spacer()
+                            }
                         }
                     }
+                    .padding()
+                    
+                    Spacer()
                 }
-                .padding()
-                
-                Spacer()
             }
-            .navigationBarTitle("척추의 길", displayMode: .inline)
         }
     }
     

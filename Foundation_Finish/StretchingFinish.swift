@@ -16,9 +16,10 @@ struct StretchingFinish: View {
     @State private var alertMessage = ""
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var diaryManager: DiaryManager
-    
+
     //팝업형식용
     @State private var showSheet = false
+    @State private var navigateToHome = false
     
     //저장 후 알림버튼 확인 누르면 마이페이지로
     @State private var navigateToMyPage = false
@@ -33,6 +34,9 @@ struct StretchingFinish: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                NavigationLink(destination: Home(), isActive: $navigateToHome) {
+                    EmptyView()
+                }
                 Color.black.opacity(0.9)
                 Color.white
                     .ignoresSafeArea()
@@ -162,6 +166,7 @@ struct StretchingFinish: View {
                                         .foregroundColor(.gray.opacity(0.8))
                                         .padding(.horizontal, 5)
                                         .padding()
+                                        .offset(y:8)
                                         .allowsHitTesting(false)
                                 }
                             }
@@ -206,6 +211,7 @@ struct StretchingFinish: View {
 //                                .padding()
                                 .foregroundColor(.gray) // 버튼처럼 색 입히기
                         }
+
                     }
                     NavigationLink(destination: MyPage().navigationBarBackButtonHidden(true), isActive: $navigateToMyPage) {
                         EmptyView()

@@ -1070,9 +1070,9 @@ class GameController: NSObject, ObservableObject {
     
     // standing 모델로 변경
     private func changeToStandingModel() {
-        guard let player = playerNode else { 
+        guard let player = playerNode else {
             print("Cannot change to standing model: player is nil")
-            return 
+            return
         }
         
         print("Changing to standing model")
@@ -1123,9 +1123,9 @@ class GameController: NSObject, ObservableObject {
     
     // 캐릭터 터치 처리 함수 추가
     func handleCharacterTouch() {
-        guard let player = playerNode else { 
+        guard let player = playerNode else {
             print("Error: playerNode is nil")
-            return 
+            return
         }
         
         print("handleCharacterTouch called")
@@ -1216,6 +1216,7 @@ struct GameView: View {
     
     @Query var challenges: [Challenge]   // ← 저장된 Challenge 배열을 자동으로 가져옴
 
+    @Environment(\.presentationMode) var presentationMode
     
     init() {
         let controller = GameController(currentDay: 1)  // currentDay 전달
@@ -1271,10 +1272,10 @@ struct GameView: View {
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
                                         .shadow(color: .black, radius: 2, x: 1, y: 1)
+                                        .padding(.top, 70)
                                 }
                                 
                             }
-                            .padding(.top, 30)
                             .padding(.trailing, 16)
                             Spacer()
                             
@@ -1336,6 +1337,7 @@ struct GameView: View {
         }
         .navigationDestination(isPresented: $showStretchingView) {
             StretchingView()
+                .navigationTitle("척추의 길")
         }
         //.navigationBarHidden(true)   // 이거 추가!
         .onAppear {
@@ -1348,9 +1350,23 @@ struct GameView: View {
                 // 저장된 챌린지가 없으면 기본 챌린지 생성
                 let newChallenge = Challenge(title: "척추의 길", day: 1, startDate: Date(), isTodayDone: false)
                 challenge = newChallenge
+                    
+                    
             }
         }
-        
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.white)
+                        .imageScale(.large)
+                        .padding(6)
+                }
+            }
+        }
     }
     
     func loadMessages(for day: Int) {

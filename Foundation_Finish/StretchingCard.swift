@@ -12,7 +12,10 @@ struct StretchingCard: View {
         
             // 초록 배경 + 이미지
             ZStack {
-                Color(red: 184/255, green: 255/255, blue: 208/255)
+                Color(red: 1.0, green: 0.95, blue: 0.7)
+
+
+
                     .frame(height: 160)
                 Image(imageName)
                     .resizable()
@@ -33,10 +36,14 @@ struct StretchingCard: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
                     .padding(.top, 2)
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
                 
             }
             .padding()
-            .padding(.trailing, 180)
+            
+            .frame(maxWidth: .infinity)
 //            .offset(x: -65) // offset 제거
         }
         .background(Color.white)
