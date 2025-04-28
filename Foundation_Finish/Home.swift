@@ -79,6 +79,16 @@ struct Home: View {
                                 Text("26개 척추뼈와 함께하는 26일 습관형성")
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
+                                HStack {
+                                    Text("진행률: 65%")
+                                        .font(.system(size: 11))
+                                        .foregroundColor(Color(.darkGray))
+                                        .offset(y: 5)
+                                    Text("18/26 달성")
+                                        .font(.system(size: 11))
+                                        .foregroundColor(Color(.darkGray))
+                                        .offset(x: 216, y:5)
+                                }
                                 
                                 ZStack(alignment: .leading) {
                                     Capsule()
@@ -181,7 +191,6 @@ struct Home: View {
                 }
 
             }
-            Divider()
         }
     }
 }
