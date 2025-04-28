@@ -65,11 +65,13 @@ struct Home: View {
                             .padding(.leading)
                         
                         VStack(spacing: 0) {
-                            Image("척추의길")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 160)
-                                .clipped()
+                            NavigationLink(destination: GameView()) {
+                                Image("척추의길")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 160)
+                                    .clipped()
+                            }
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("척추의 길")
@@ -97,7 +99,7 @@ struct Home: View {
                         .padding(.horizontal)
                     }
 
-                    .padding(.bottom)
+                    .padding(.bottom, 25)
                     
                     //  스트레칭 섹션
                     VStack(alignment: .leading) {
@@ -160,9 +162,9 @@ struct Home: View {
             //  상단 툴바
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Image(systemName: "tortoise.fill")
+                    Image("아이콘_배경x")
                         .resizable()
-                        .frame(width: 50, height: 25)
+                        .frame(width: 70, height: 60)
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
