@@ -33,115 +33,80 @@ struct MyPage: View {
     
     
     var body: some View {
-                NavigationStack {
-        VStack(spacing: 0) {
-            
-            HStack {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                            }) {
-                                Image(systemName: "chevron.left")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.black)
-                                    .padding(6)
-                            }
+        NavigationStack {
+            VStack(spacing: 0) {
                 
-//                            Spacer()
-                            Text("마이페이지")
-                                .font(.system(size: 20))
-                                .fontWeight(.bold)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .padding(.horizontal)
-//                            Spacer()
-                    .offset(x: -5)
-//                Spacer()
-                NavigationLink(destination: Setting()){
-                    Image(systemName: "gearshape.fill")
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundColor(.black)
-                        .offset(x: -10)
-                }
-                
-                        }
-                        .padding(.bottom, 12)
-                        .padding(.horizontal, 10)
-            .frame(height: 44)
-            
-            Divider()
-                .background(Color.gray)
-//                    .offset(y: -30)
-            
-//            HStack {
-//                            Spacer()
-//                            Text("마이페이지")
-//                                .font(.system(size: 20))
-//                                .fontWeight(.bold)
-//                            Spacer()
-//                            NavigationLink(destination: SettingsView()){
-//                                Image(systemName: "gearshape.fill")
-//                                    .resizable()
-//                                    .frame(width: 25, height: 25)
-//                                    .foregroundColor(.black)
-//                            }
-//                        }
-//            .padding()
-//                        .padding(.bottom, 22)
-//
-//            Divider()
-//                .background(Color.gray)
-//                    .offset(y: -30)
-            // 탭 메뉴
-            HStack {
-                ForEach(0..<tabTitles.count, id: \.self) { index in
+                HStack {
                     Button(action: {
-                        withAnimation {
-                            selectedTab = index
-                        }
+                        presentationMode.wrappedValue.dismiss()
                     }) {
-                        VStack(spacing: 4) {
-                            Text(tabTitles[index])
-                                .foregroundColor(selectedTab == index ? .black : .gray)
-                                .fontWeight(selectedTab == index ? .bold : .regular)
-                            
-                            // 밑줄 스타일
-                            Rectangle()
-                                .fill(selectedTab == index ? Color.black : Color.gray.opacity(0.3))
-                                .frame(height: 2)
-                        }
-                        .frame(maxWidth: .infinity)
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 25))
+                            .foregroundColor(.black)
+                            .padding(6)
+                    }
+                    
+                    //                            Spacer()
+                    Text("마이페이지")
+                        .font(.system(size: 20))
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.horizontal)
+                        .offset(x: -5)
+                    NavigationLink(destination: Setting()){
+                        Image(systemName: "gearshape.fill")
+                            .resizable()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.black)
+                            .offset(x: -10)
                     }
                 }
-            }
-            .padding(.horizontal)
-            .padding(.top, 20)
-            .padding(.bottom, 12)
+                .padding(.bottom, 12)
+                .padding(.horizontal, 10)
+                .frame(height: 44)
+                
+                Divider()
+                    .background(Color.gray)
+                // 탭 메뉴
+                HStack {
+                    ForEach(0..<tabTitles.count, id: \.self) { index in
+                        Button(action: {
+                            withAnimation {
+                                selectedTab = index
+                            }
+                        }) {
+                            VStack(spacing: 4) {
+                                Text(tabTitles[index])
+                                    .foregroundColor(selectedTab == index ? .black : .gray)
+                                    .fontWeight(selectedTab == index ? .bold : .regular)
+                                
+                                // 밑줄 스타일
+                                Rectangle()
+                                    .fill(selectedTab == index ? Color.black : Color.gray.opacity(0.3))
+                                    .frame(height: 2)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.top, 20)
+                .padding(.bottom, 12)
                 // 아래쪽 내용 뷰
                 TabView(selection: $selectedTab) {
                     ProfileView()
+                        .environmentObject(diaryManager)
                         .tag(0)
                     
                     BadgeView()
+                        .environmentObject(diaryManager)
                         .tag(1)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             }
-//            .navigationTitle("마이페이지")
-//        .navigationBarTitleDisplayMode(.inline) // 또는 .large
-//        .toolbar {
-//            ToolbarItem(placement: .principal) {
-//                HStack{
-//                    Text("마이페이지")
-//                        .font(.system(size: 18, weight: .bold))
-//                    Spacer()
-//                    NavigationLink(destination: SettingsView()){
-//                        Image(systemName: "gearshape.fill")
-//                    }
-//                }
-//            }
-//        }
-
         }
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
     }
 }
 

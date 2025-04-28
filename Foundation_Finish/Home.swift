@@ -36,7 +36,7 @@ struct Home: View {
                             
                             let rotateX = simd_quatf(angle: -.pi/2 - .pi/30, axis: SIMD3<Float>(1, 0, 0))
                             let rotateY = simd_quatf(angle: .pi/2 + .pi/7, axis: SIMD3<Float>(0, 1, 0))
-                            let rotateZ = simd_quatf(angle: -.pi/37, axis: SIMD3<Float>(-2, -2, 1)) // ➔ z축 회전 추가 
+                            let rotateZ = simd_quatf(angle: -.pi/37, axis: SIMD3<Float>(-2, -2, 1)) // ➔ z축 회전 추가
                             
                             entity.orientation = rotateZ * rotateY * rotateX
                             
@@ -168,8 +168,12 @@ struct Home: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Image(systemName: "person.crop.circle")
-                        .font(.system(size: 25))
+                    NavigationLink(destination: MyPage().environmentObject(DiaryManager.shared)) {
+                        Image(systemName: "person.crop.circle")
+                            .font(.system(size: 25))
+                            .foregroundColor(.black)
+                        
+                    }
                 }
 
             }
