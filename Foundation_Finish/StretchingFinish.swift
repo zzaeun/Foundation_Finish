@@ -20,6 +20,9 @@ struct StretchingFinish: View {
     //팝업형식용
     @State private var showSheet = false
     
+    //저장 후 알림버튼 확인 누르면 마이페이지로
+    @State private var navigateToHome = false
+    
     private var formattedDateTime: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
@@ -150,6 +153,7 @@ struct StretchingFinish: View {
                             .foregroundColor(.gray)
 //                    }
                     .padding(.horizontal)
+                    .offset(y: 10)
                     
                     // 일기 작성
                     TextEditor(text: $diaryText)
@@ -203,12 +207,13 @@ struct StretchingFinish: View {
                         }
                         .disabled(selectedEmotion == nil || diaryText.isEmpty)
                         
-                        Button("나중에 하기") {
-                            // TODO: 홈 화면으로 이동하는 코드 추가 예정
-                            // dismiss()
+                        NavigationLink(destination: Home()
+                            .navigationBarBackButtonHidden(true)) {
+                            Text("나중에 하기")
+                                .fontWeight(.bold)
+                                .padding()
+                                .foregroundColor(.gray) // 버튼처럼 색 입히기
                         }
-                        .disabled(selectedEmotion == nil || diaryText.isEmpty)
-                        .fontWeight(.bold)
                     }
                     .padding()
                 }
@@ -218,7 +223,8 @@ struct StretchingFinish: View {
             .navigationBarTitleDisplayMode(.inline)
             .alert("알림", isPresented: $showAlert) {
                 Button("확인") {
-                    dismiss()
+//                    dismiss()
+                    navigateToHome = true // 확인 누르면 true
                 }
             } message: {
                 Text(alertMessage)

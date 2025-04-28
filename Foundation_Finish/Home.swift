@@ -168,10 +168,11 @@ struct Home: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Image(systemName: "person.crop.circle")
-                        .font(.system(size: 25))
+//                    NavigationLink(destination: MyPage()) {
+                        Image(systemName: "person.crop.circle")
+                            .font(.system(size: 25))
+//                    }
                 }
-
             }
             Divider()
         }
