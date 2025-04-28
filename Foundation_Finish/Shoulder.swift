@@ -8,7 +8,7 @@
 import SwiftUI
 import SceneKit
 
-struct Neck: View {
+struct Shoulder: View {
     @State private var selectedSegment = 0
     
     @State private var isPlaying = true
@@ -31,7 +31,7 @@ struct Neck: View {
     @State private var showRestText = false
     
     private let instructions: [[String]] = [
-        ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."],
+        ["팔을 위로 올려 벽에 올립니다.", "팔을 뒤로하고 가슴을 내밀어주세요", "크게 숨을 내쉬면서 10초간 유지하세요."]
     ]
         
       
@@ -60,7 +60,6 @@ struct Neck: View {
     
     var body: some View {
             VStack(spacing: 16) {
-                // Segmented picker removed. Only "목" segment is shown.
                 SceneView(
                     scene: scene,
                     pointOfView: cameraNode,
@@ -221,7 +220,7 @@ struct Neck: View {
     private func loadModel() {
         animationStopTimer?.invalidate()
         self.modelNode?.removeAllAnimations()
-        let modelName = "3d_Rabbit_Stretching_neck"
+        let modelName = "3d_Rabbit_Stretching_shoulder"
         if let modelURL = Bundle.main.url(forResource: modelName, withExtension: "usdz") {
             do {
                 let modelScene = try SCNScene(url: modelURL, options: nil)
@@ -229,8 +228,8 @@ struct Neck: View {
                 
                 self.modelNode?.removeFromParentNode()
                 modelNode.position = SCNVector3(0, 0, 0)
-                modelNode.scale = SCNVector3(0.6, 0.6, 0.6)
-                modelNode.eulerAngles = SCNVector3(-1.5, 0, 0)
+                modelNode.scale = SCNVector3(0.5, 0.5, 0.5)
+                modelNode.eulerAngles = SCNVector3(-1.5, 9.5, 0)
                 modelNode.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0)
                 self.modelNode = modelNode
                 scene.rootNode.addChildNode(modelNode)
@@ -268,9 +267,9 @@ struct Neck: View {
 }
 
     private func segmentTitle(for segment: Int) -> String {
-        return "어깨올림근"
+        return "큰가슴근"
     }
 
 #Preview {
-    Neck()
+    Shoulder()
 }

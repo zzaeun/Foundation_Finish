@@ -175,7 +175,7 @@ struct ProfileView: View {
                     
 
                     VStack(alignment: .leading, spacing: 5){
-                        Text("김수한무")
+                        Text("돌비")
                             .font(.system(size: 20))
                             .fontWeight(.bold)
                         Text("매일매일 열심히🔥")

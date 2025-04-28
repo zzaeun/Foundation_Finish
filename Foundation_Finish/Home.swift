@@ -12,7 +12,7 @@ struct Home: View {
 
                 HStack(alignment: .bottom) {
                     
-                    Text("Hello, User!")
+                    Text("Hello, 돌비!")
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
                         .background(Color.blue)
@@ -133,17 +133,21 @@ struct Home: View {
                         // 선택된 부위에 따라 StretchingCard 표시
                         switch selectedBodyPart {
                         case "목":
-                            StretchingCard(
-                                imageName: "목스트레칭",
-                                title: "거북목 스트레칭",
-                                description: "현대인의 고질병, 거북목 타파하기!"
-                            )
+                            NavigationLink(destination: Neck().navigationTitle("목 스트레칭")) {
+                                StretchingCard(
+                                    imageName: "목스트레칭",
+                                    title: "거북목 스트레칭",
+                                    description: "현대인의 고질병, 거북목 타파하기!"
+                                )
+                            }
                         case "어깨":
-                            StretchingCard(
-                                imageName: "어깨스트레칭",
-                                title: "어깨 풀기",
-                                description: "굳은 어깨를 부드럽게 풀어봐요!"
-                            )
+                            NavigationLink(destination: Shoulder().navigationTitle("어깨 스트레칭")) {
+                                StretchingCard(
+                                    imageName: "어깨스트레칭",
+                                    title: "어깨 풀기",
+                                    description: "굳은 어깨를 부드럽게 풀어봐요!"
+                                )
+                            }
                         case "허리":
                             StretchingCard(
                                 imageName: "허리스트레칭",
@@ -162,7 +166,7 @@ struct Home: View {
             //  상단 툴바
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Image("아이콘_배경x")
+                    Image("icon_nobackground")
                         .resizable()
                         .frame(width: 70, height: 60)
                 }
