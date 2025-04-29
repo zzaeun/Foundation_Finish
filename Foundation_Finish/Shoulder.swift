@@ -61,6 +61,7 @@ struct Shoulder: View {
     }
     
     var body: some View {
+        NavigationStack {
             VStack(spacing: 16) {
                 SceneView(
                     scene: scene,
@@ -187,19 +188,30 @@ struct Shoulder: View {
                 
                 Spacer()
             }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
-                            .imageScale(.large)
-                            .padding(6)
-                    }
+        }
+        .onDisappear {
+            // Remove all dynamically added model nodes
+            scene.rootNode.childNodes.forEach { node in
+                if node.name == "modelNode" {
+                    node.removeFromParentNode()
                 }
             }
+            // Also clear the stored reference
+            modelNode = nil
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
+                }
+            }
+        }
 
     }
     
@@ -246,6 +258,7 @@ struct Shoulder: View {
                 modelNode.eulerAngles = SCNVector3(-1.5, 9.5, 0)
                 modelNode.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0)
                 self.modelNode = modelNode
+                modelNode.name = "modelNode"
                 scene.rootNode.addChildNode(modelNode)
 
                 let sceneSource = SCNSceneSource(url: modelURL, options: nil)!

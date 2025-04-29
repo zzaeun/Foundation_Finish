@@ -3,7 +3,7 @@
         "day1": {
             "messages": [
                 {
-                    "text": "오늘 온다구 했는데... 22",
+                    "text": "오늘 온다구 했는데...",
                     "image": "emoji_tutle_wait_with_peace"
                 },
                 {
@@ -65,7 +65,7 @@
             "messages": [
                 {
                     "text": "안녕! 어제 운동한 거 어땠어?",
-                    "image": "emoji_tutle_smile"
+                    "image": "emoji_tutle_happy_cute"
                 },
                 {
                     "text": "난 어제 스트레칭하고나서 몸이 조금 가벼워졌어!",
@@ -100,7 +100,7 @@
                     "image": "emoji_tutle_dizzy"
                 },
                 {
-                    "text": "ㅎㅎㅎ ",
+                    "text": "(하기싫다)ㅎㅎㅎ ",
                     "image": "emoji_tutle_embarrassed_grin"
                 }
             ],
@@ -110,9 +110,9 @@
                 "z": -3.68
             },
             "r_initialPosition": {
-                "x": -0.12,
+                "x": -0.18,
                 "y": 0.2,
-                "z": -4
+                "z": -3.4
             },
             "initialRotation": {
                 "x": -1.57,
@@ -129,7 +129,7 @@
                     "image": "emoji_tutle_dizzy"
                 },
                 {
-                    "text": "아무리 거북이라지만 이거 너무 심한 거북목이잖아. ",
+                    "text": "아무리 거북이라지만 이거 너무 거북목이잖아. ",
                     "image": "emoji_rabbit_armcross_teeth"
                 },
                 {
@@ -162,7 +162,7 @@
                 },
                 {
                     "text": "(힘없이) 우리 운동하러 가자 ",
-                    "image": "emoji_tutle_yesIcan"
+                    "image": "emoji_tutle_shoulder_stiff"
                 }
             ],
             "t_initialPosition": {
@@ -186,46 +186,78 @@
         "day4": {
             "messages": [
                 {
-                    "text": "헤헤, 오늘은 점심시간에도 스트레칭을 했어!",
-                    "image": "emoji_tutle_big_happy"
+                    "text": "어이쿠 거북이 아니야? 하마터면 못 알아볼 뻔.. 어?",
+                    "image": "emoji_rabbit_itsYou"
                 },
                 {
-                    "text": "앉아서만 있으면 어깨랑 목이 너무 답답했거든.",
-                    "image": "emoji_tutle_shoulder_stiff"
+                    "text": "(거북이가 바르게 선다. 자세가 놀랍도록 바르다.) 오랜만이군 토끼",
+                    "image": "emoji_tutle_OverthePower"
                 },
                 {
-                    "text": "근데 조금이라도 움직이니까 기분이 확 좋아졌어!",
-                    "image": "emoji_tutle_eye_sparkling"
+                    "text": "(혼잣말로)녀석 자세가 왜이렇게 바르지.",
+                    "image": "emoji_rabbit_angelRing_sweat"
                 },
                 {
-                    "text": "역시 움직여야해!",
-                    "image": "emoji_tutle_giveYouHeart"
+                    "text": "지난 26일간 자세를 교정하는 수련을 했지. 그 결과가 지금 네 눈앞에 있는 것이다.",
+                    "image": "emoji_tutle_OverthePower"
                 },
                 {
-                    "text": "오늘 스트레칭도 잘해보자! ",
-                    "image": "emoji_tutle_yesIcan"
+                    "text": "26일? 고작 26일로 바른 자세가 가능하다고 생각하는거..냐.",
+                    "image": "emoji_rabbit_angelRing_sweat"
                 },
                 {
-                    "text": "자, 그럼 우리 힘차게 운동하러 가자!",
-                    "image": "emoji_tutle_bigthumb_wink"
+                    "text": "흐음. 그럼 나의 뼈들이 보여주는 이 아름다움은 뭐라 생각하는거지",
+                    "image": "emoji_tutle_OverthePower2"
+                },
+                {
+                    "text": "(목에 땀이 흐르며 혼잣말로) 어?, 거북이 이녀석 왜이렇게 자세가 바르지",
+                    "image": "emoji_rabbit_angelRing_sweat"
+                },
+                {
+                    "text": "토끼야 잘 안들리는구나",
+                    "image": "emoji_tutle_OverthePower2"
+                },
+                {
+                    "text": "너 자세가 되기 발라..",
+                    "image": "emoji_rabbit_angelRing_sweat"
+                },
+                {
+                    "text": "꾸준한 노력, 서두르지 않는 마음, 나를 아끼는 마음",
+                    "image": "emoji_tutle_OverthePower2"
+                },
+                {
+                    "text": "내 '거북목'이 바르게 펴진 이유이고",
+                    "image": "emoji_tutle_OverthePower2"
+                },
+                {
+                    "text": "네 목이 '거북목'인 이유이기도 하지",
+                    "image": "emoji_tutle_OverthePower2"
+                },
+                {
+                    "text": "크윽 내 목이.. 내 목이..",
+                    "image": "emoji_rabbit_angelRing_sweat"
+                },
+                {
+                    "text": "자, 이제 누가 거북목이지?",
+                    "image": "emoji_tutle_OverthePower3"
                 }
             ],
             "t_initialPosition": {
-                "x": -0.18,
-                "y": 0.2,
-                "z": -3.36
+                "x": -0.1688,
+                "y": 0.57,
+                "z": 4
             },
             "r_initialPosition": {
-                "x": -0.2336,
-                "y": 0.2,
-                "z": -2.5
+                "x": -0.1442,
+                "y": 0.61,
+                "z": 3.68
             },
             "initialRotation": {
                 "x": -1.57,
                 "y": -3.15,
                 "z": 0.0
             },
-            "rabbit_pose": "3d_rabbit_sit",
+            "rabbit_pose": "3d_rabbit_sweat",
             "turtle_pose": "3d_officer_tutle_standing"
         }
     }
