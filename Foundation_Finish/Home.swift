@@ -96,7 +96,7 @@ struct Home: View {
                                         .foregroundColor(Color.gray.opacity(0.3))
                                     Capsule()
                                         .frame(width: 300 * progress, height: 6)
-                                        .foregroundColor(.black)
+                                        .foregroundColor(.blue)
                                 }
                                 .padding(.top, 4)
                             }
@@ -127,7 +127,7 @@ struct Home: View {
                                     Text(part)
                                         .font(.system(size: 16, weight: .medium))
                                         .frame(width: 30)
-                                        .foregroundColor(selectedBodyPart == part ? Color.white : Color.white)
+                                        .foregroundColor(selectedBodyPart == part ? Color.white : Color.black)
                                         .padding(.horizontal, 20)
                                         .padding(.vertical, 10)
                                         .background(

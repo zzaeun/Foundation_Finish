@@ -34,7 +34,7 @@ struct Shoulder: View {
     @State private var navigateToGood = false
 
     private let instructions: [[String]] = [
-        ["팔을 위로 올려 벽에 올립니다.", "팔을 뒤로하고 가슴을 내밀어주세요", "크게 숨을 내쉬면서 10초간 유지하세요."]
+        ["벽 옆에 서서 팔꿈치를 90도로 굽혀 손바닥을 어깨 높이에 대주세요.", "몸을 천천히 벽 반대 방향으로 틀어 어깨 앞쪽을 늘려주세요.", "크게 호흡하면서 10~20초간 유지하세요."]
     ]
 
     private var timerString: String {
@@ -205,6 +205,19 @@ struct Shoulder: View {
             }
 
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
+                }
+            }
+        }
 
     }
 
@@ -284,7 +297,7 @@ struct Shoulder: View {
 }
 
 private func segmentTitle(for segment: Int) -> String {
-    return "큰가슴근"
+    return "소흉근&대흉근 (라운드숄더)"
 }
 
 #Preview {

@@ -30,7 +30,7 @@ struct StretchingView: View {
 
     private let instructions: [[String]] = [
         ["의자에 똑바로 앉아주세요.", "오른손으로 머리를 살짝 잡고 오른쪽으로 천천히 기울여 주세요.", "목 옆 근육이 부드럽게 늘어나는 느낌에 집중하며 10초 유지합니다."],
-        ["어깨를 천천히 위로 올렸다가 내리세요.", "양팔을 뒤로 쭉 펴세요.", "깊게 숨을 쉬면서 10초간 유지하세요."],
+        ["벽 옆에 서서 팔꿈치를 90도로 굽혀 손바닥을 어깨 높이에 대주세요.", "몸을 천천히 벽 반대 방향으로 틀어 어깨 앞쪽을 늘려주세요.", "크게 호흡하면서 10~20초간 유지하세요."],
         ["허리를 곧게 펴고, 상체를 천천히 앞으로 숙이세요.", "손끝이 발끝을 향하도록 하세요.", "등과 허리 뒤쪽이 당기는 느낌에 집중하세요."],
         ["팔을 뻗고 손바닥이 바깥을 향하도록 펴주세요.", "손가락이 몸쪽을 향하도록 손등을 부드럽게 꺾어주세요.", "반대손으로 손바닥을 잡고 15~30초 동안 천천히 늘려주세요."]
     ]
@@ -117,9 +117,9 @@ struct StretchingView: View {
                                 VStack {
                                     Spacer()
                                     Text("잠시 휴식")
-                                        .font(.title3)
+                                        .font(.title2)
                                         .fontWeight(.bold)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(.orange)
                                         .padding(.horizontal, 24)
                                         .padding(.vertical, 12)
                                         .cornerRadius(8)
@@ -340,9 +340,9 @@ struct StretchingView: View {
 private func segmentTitle(for segment: Int) -> String {
     switch segment {
     case 0:
-        return "목 스트레칭"
+        return "어깨올림근"
     case 1:
-        return "어깨 스트레칭"
+        return "소흉근&대흉근 (라운드숄더)"
     case 2:
         return "허리 스트레칭"
     case 3:
