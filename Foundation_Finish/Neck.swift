@@ -195,17 +195,19 @@ struct Neck: View {
                 }
             }
         }
-        .onDisappear {
-            // Remove all dynamically added model nodes
-            scene.rootNode.childNodes.forEach { node in
-                if node.name == "modelNode" {
-                    node.removeFromParentNode()
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
                 }
             }
-            // Also clear the stored reference
-            modelNode = nil
         }
-
     }
 
     private func setupScene() {
