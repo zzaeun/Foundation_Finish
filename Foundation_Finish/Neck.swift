@@ -195,6 +195,16 @@ struct Neck: View {
                 }
             }
         }
+        .onDisappear {
+            // Remove all dynamically added model nodes
+            scene.rootNode.childNodes.forEach { node in
+                if node.name == "modelNode" {
+                    node.removeFromParentNode()
+                }
+            }
+            // Also clear the stored reference
+            modelNode = nil
+        }
 
     }
 
@@ -241,6 +251,7 @@ struct Neck: View {
                 modelNode.eulerAngles = SCNVector3(-1.5, 0, 0)
                 modelNode.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0)
                 self.modelNode = modelNode
+                modelNode.name = "modelNode"
                 scene.rootNode.addChildNode(modelNode)
 
                 let sceneSource = SCNSceneSource(url: modelURL, options: nil)!
