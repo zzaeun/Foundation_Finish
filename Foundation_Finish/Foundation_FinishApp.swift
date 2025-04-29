@@ -14,5 +14,6 @@ struct Foundation_FinishApp: App {
             ContentView()
                 .environmentObject(DiaryManager.shared)
         }
+        .modelContainer(for: Challenge.self)
     }
 }

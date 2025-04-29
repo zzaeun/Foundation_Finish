@@ -5,11 +5,11 @@ struct PainSurvey: View {
     @State private var painLevels: [String: Double] = [:]
     @State private var showStatusCheck = false
     @State private var selectedAreaForSlider: String? = nil
-
+    
     @Environment(\.presentationMode) var presentationMode
-
+    
     let painAreas = ["목", "어깨", "팔꿈치", "손목/ 손", "허리", "골반/ 고관절", "무릎", "발목/ 발"]
-
+    
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -23,12 +23,12 @@ struct PainSurvey: View {
                     }
                     painAreaSelection
                     if !selectedPainAreas.isEmpty { // 하나 이상의 통증 부위가 선택되었을 때만 표시
-                        painLevelSection 
+                        painLevelSection
                     }
                 }
                 .padding()
             }
-
+            
             // 버튼은 항상 하단 고정
             HStack {
                 Button(action: {
@@ -82,7 +82,7 @@ struct PainSurvey: View {
             StatusCheck()
         }
     }
-
+    
     // 상태 진단, Divider 표시
     var titleSection: some View {
         VStack {
@@ -92,13 +92,13 @@ struct PainSurvey: View {
                     .bold()
             }
             .padding(.horizontal)
-
+            
             Divider()
                 .padding(.bottom)
         }
         .padding(.top, -55)
     }
-
+    
     // 통증 부위를 선택
     var painAreaSelection: some View {
         VStack(alignment: .leading) {
@@ -114,7 +114,7 @@ struct PainSurvey: View {
             }
             .padding(.bottom)
             .padding(.top, -25)
-
+            
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) { // 2열의 유연한 그리드
                 ForEach(painAreas, id: \.self) { area in // painAreas 배열의 각 요소를 순회
                     PainAreaButton(
@@ -135,25 +135,55 @@ struct PainSurvey: View {
                                     }
                                 }
                             }
-                        )
+                                           )
                     )
                 }
             }
         }
     }
-
+    
     // 선택된 통증 부위별 통증 정도 조절
     var painLevelSection: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text("통증 정도")
-                .font(.headline)
-                .padding(.horizontal, 16)
-            
-            ForEach(selectedPainAreas.sorted(), id: \.self) { area in // 선택된 부위를 정렬하여 순회
-                VStack(spacing: 8) {
+        VStack(spacing: 16) {
+            // 부위를 하나라도 선택하면 슬라이더 + 리스트 표시
+            if !selectedPainAreas.isEmpty {
+                
+                // 슬라이더 고정
+                VStack(spacing: 6) {
+                    if let selectedArea = selectedAreaForSlider ?? selectedPainAreas.first {
+                        Slider(
+                            value: Binding(
+                                get: { painLevels[selectedArea] ?? 5.0 },
+                                set: { painLevels[selectedArea] = $0 }
+                            ),
+                            in: 1...10,
+                            step: 1
+                        )
+                        .padding(.horizontal, 16)
+                        
+                        GeometryReader { geometry in
+                            HStack {
+                                Text("약함")
+                                    .frame(width: geometry.size.width / 3, alignment: .leading)
+                                    .offset(x: 15)
+                                Text("보통")
+                                    .frame(width: geometry.size.width / 3, alignment: .center)
+                                Text("심함")
+                                    .frame(width: geometry.size.width / 3, alignment: .trailing)
+                                    .offset(x: -15)
+                            }
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        }
+                        .frame(height: 20)
+                    }
+                }
+                
+                // 통증 부위 리스트
+                ForEach(selectedPainAreas.sorted(), id: \.self) { area in
                     Button(action: {
                         withAnimation {
-                            selectedAreaForSlider = (selectedAreaForSlider == area ? nil : area)
+                            selectedAreaForSlider = area // 클릭하면 조절할 부위를 바꾼다
                         }
                     }) {
                         RoundedRectangle(cornerRadius: 10)
@@ -168,42 +198,20 @@ struct PainSurvey: View {
                                     Text(area)
                                         .foregroundColor(.black)
                                     Spacer()
-                                    Text("\(Int(painLevels[area] ?? 5))/10") // 통증 정도 표시 (없으면 기본값 5)
+                                    Text("\(Int(painLevels[area] ?? 5))/10")
                                         .foregroundColor(.black)
                                 }
-                                .padding(.horizontal, 16)
+                                    .padding(.horizontal, 16)
                             )
                     }
-                    .padding(.leading, 9)
-                    .padding(.trailing, 5)
-
-                    if selectedAreaForSlider == area {
-                        VStack(spacing: 6) {
-                            Slider(value: Binding(
-                                get: { painLevels[area] ?? 5.0 }, // 현재 값 가져오기 (없으면 기본값 5)
-                                set: { painLevels[area] = $0 } // 값 변경 시 painLevels 업데이트
-                            ), in: 1...10, step: 1)
-                            .padding(.horizontal, 16)
-
-                            GeometryReader { geometry in // 슬라이더 너비에 따라 "약함", "보통", "심함" 위치 조정
-                                HStack {
-                                    Text("약함")
-                                        .frame(width: geometry.size.width / 3, alignment: .leading)
-                                        .offset(x: 15)
-//                                    Text("보통")
-//                                        .frame(width: geometry.size.width / 3, alignment: .center)
-//                                        .offset(x: -12)
-                                    Text("심함")
-                                        .frame(width: geometry.size.width / 3, alignment: .trailing)
-                                        .offset(x: 100)
-                                }
-                                .font(.caption) // 작은 글씨 스타일
-                                .foregroundColor(.gray)
-                            }
-                            .frame(height: 20)
-                        }
-                    }
+                    .padding(.horizontal, 8)
                 }
+                
+            } else {
+                // 아무것도 선택되지 않은 경우
+                Text("통증 부위를 선택해주세요")
+                    .foregroundColor(.gray)
+                    .font(.subheadline)
             }
         }
         .padding(.top, 10)

@@ -2,10 +2,12 @@ import SwiftUI
 
 struct StretchingGoodView: View {
 
+    @Environment(\.presentationMode) var presentationMode
+
     @State private var navigateToNext = false
     var nextDestination: AnyView
 
-    init(nextDestination: AnyView = AnyView(Home())) { // 🔥 추가
+    init(nextDestination: AnyView = AnyView(Home().navigationBarBackButtonHidden(true))) { // 🔥 추가
         self.nextDestination = nextDestination
     }
 
@@ -35,18 +37,6 @@ struct StretchingGoodView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
-                        .imageScale(.large)
-                        .padding(6)
-                }
-            }
-        }
     }
 }
 

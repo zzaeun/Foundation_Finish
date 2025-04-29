@@ -195,7 +195,19 @@ struct Neck: View {
                 }
             }
         }
-
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
+                }
+            }
+        }
     }
 
     private func setupScene() {
@@ -241,6 +253,7 @@ struct Neck: View {
                 modelNode.eulerAngles = SCNVector3(-1.5, 0, 0)
                 modelNode.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0)
                 self.modelNode = modelNode
+                modelNode.name = "modelNode"
                 scene.rootNode.addChildNode(modelNode)
 
                 let sceneSource = SCNSceneSource(url: modelURL, options: nil)!
