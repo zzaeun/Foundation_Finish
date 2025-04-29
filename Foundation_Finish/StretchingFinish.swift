@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct StretchingFinish: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var selectedEmotion: Emotion?
     @State private var diaryText: String = ""
     @State private var selectedDate: Date = Date()
@@ -22,7 +24,8 @@ struct StretchingFinish: View {
     @State private var navigateToHome = false
     
     //저장 후 알림버튼 확인 누르면 마이페이지로
-    @State private var navigateToMyPage = false
+//    @State private var navigateToMyPage = false
+    @State private var showHome = false
     
     private var formattedDateTime: String {
         let formatter = DateFormatter()
@@ -213,7 +216,7 @@ struct StretchingFinish: View {
                         }
 
                     }
-                    NavigationLink(destination: MyPage().navigationBarBackButtonHidden(true), isActive: $navigateToMyPage) {
+                    NavigationLink(destination: Home().navigationBarBackButtonHidden(true), isActive: $showHome) {
                         EmptyView()
                     }
 //                    .padding()
@@ -225,10 +228,23 @@ struct StretchingFinish: View {
             .alert("알림", isPresented: $showAlert) {
                 Button("확인") {
 //                    dismiss()
-                    navigateToMyPage = true // 확인 누르면 true
+                    showHome = true // 확인 누르면 true
                 }
             } message: {
                 Text(alertMessage)
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.black)
+                        .imageScale(.large)
+                        .padding(6)
+                }
             }
         }
     }

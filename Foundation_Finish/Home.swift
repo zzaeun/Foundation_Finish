@@ -12,7 +12,7 @@ struct Home: View {
 
                 HStack(alignment: .bottom) {
                     
-                    Text("Hello, 돌비!")
+                    Text("Hello, Dolby!")
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
                         .background(Color.blue)
