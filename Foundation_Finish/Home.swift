@@ -87,7 +87,7 @@ struct Home: View {
                                     Text("18/26 달성")
                                         .font(.system(size: 11))
                                         .foregroundColor(Color(.darkGray))
-                                        .offset(x: 216, y:5)
+                                        .offset(x: 220, y:5)
                                 }
                                 
                                 ZStack(alignment: .leading) {
@@ -189,6 +189,7 @@ struct Home: View {
                     }
                 }
             }
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

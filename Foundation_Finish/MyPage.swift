@@ -105,6 +105,8 @@ struct MyPage: View {
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             }
         }
+        .background(Color.clear)
+        .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
     }
