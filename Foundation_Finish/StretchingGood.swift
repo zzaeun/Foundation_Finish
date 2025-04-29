@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct StretchingGoodView: View {
-
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var navigateToNext = false
     var nextDestination: AnyView
 
