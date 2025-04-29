@@ -93,9 +93,7 @@ class GameController: NSObject, ObservableObject {
     @Published var playerPosition = SCNVector3(0, 0, 0)
     @Published var playerRotation = SCNVector3(0, 0, 0)
     @Published var isJumping = false
-    
-    // 현재 날짜 변수 추가
-    private var currentDay: Int
+    @Published var challenge: Challenge?  // Published로 변경
     
     // 뼈 위치 배열 추가
     @Published var bonePositions: [SCNVector3] = []
@@ -166,25 +164,63 @@ class GameController: NSObject, ObservableObject {
         }
     }
     
-    init(currentDay: Int = 1) {
-        self.currentDay = currentDay
+    init(challenge: Challenge? = nil) {
         self.scene = SCNScene()
         super.init()
+        self.challenge = challenge
+    }
+    
+    // challenge가 변경될 때 scene을 다시 설정하는 메서드 수정
+    func updateScene() {
+        // 기존 bone들을 모두 제거
+        scene.rootNode.childNodes.forEach { node in
+            if node.name?.starts(with: "bone_") == true {
+                node.removeFromParentNode()
+            }
+        }
         setupScene()
     }
     
     private func setupScene() {
-        // 카메라 설정
+        // 기존 캐릭터들, 조명 제거
+        scene.rootNode.childNodes.forEach { node in
+            if node.name?.starts(with: "bone_") == true ||   // bone 제거
+               node === playerNode ||                        // 거북이 제거
+               node === rabbitNode ||                        // 토끼 제거
+               node.light?.type == .ambient ||               // 환경광 제거
+               node.light?.type == .directional {            // 직사광 제거
+                node.removeFromParentNode()
+            }
+        }
+        playerNode = nil
+        rabbitNode = nil
+
+        // dialogue.json에서 현재 날짜의 초기 위치 가져오기
+        var initialTurtleY: Float = 1.64  // 기본값
+        if let dialogueUrl = Bundle.main.url(forResource: "dialogue", withExtension: "json") {
+            do {
+                let data = try Data(contentsOf: dialogueUrl)
+                let decoder = JSONDecoder()
+                let dialogueData = try decoder.decode(DialogueData.self, from: data)
+                
+                if let dayData = dialogueData.days["day\(challenge?.day ?? 1)"] {
+                    initialTurtleY = dayData.t_initialPosition.y
+                }
+            } catch {
+                print("Error loading initial position: \(error.localizedDescription)")
+            }
+        }
+
+        // 카메라 설정 - 거북이의 y좌표를 기준으로 설정
         let newCameraNode = SCNNode()
         newCameraNode.camera = SCNCamera()
         newCameraNode.camera?.zNear = 0.1
         newCameraNode.camera?.zFar = 100
-        newCameraNode.position = SCNVector3(-0.42, 1.0, -0.5)
+        newCameraNode.position = SCNVector3(-0.42, initialTurtleY + 1.0, -0.5)  // 거북이 위치보다 1.0 위에 위치
         newCameraNode.eulerAngles = SCNVector3(-Float.pi/6, -1, 0)
         
         scene.rootNode.addChildNode(newCameraNode)
         self.cameraNode = newCameraNode
-        
         
         // 카메라 각도 초기화
         self.cameraAngle = -2.6
@@ -242,7 +278,8 @@ class GameController: NSObject, ObservableObject {
         }
         
         // 플레이어(거북이) 로드
-        if let turtlePath = Bundle.main.path(forResource: "3d_officer_tutle_standing", ofType: "usdz") {
+        let turtleModelName = challenge?.day == 4 ? "3d_officer_tutle_cho" : "3d_officer_tutle_standing"
+        if let turtlePath = Bundle.main.path(forResource: turtleModelName, ofType: "usdz") {
             print("Found turtle at path: \(turtlePath)")
             let turtleUrl = URL(fileURLWithPath: turtlePath)
             do {
@@ -257,7 +294,7 @@ class GameController: NSObject, ObservableObject {
                         let decoder = JSONDecoder()
                         let dialogueData = try decoder.decode(DialogueData.self, from: data)
                         
-                        if let dayData = dialogueData.days["day\(currentDay)"] {
+                        if let dayData = dialogueData.days["day\(challenge?.day ?? 1)"] {
                             let initialPos = dayData.t_initialPosition
                             let initialRot = dayData.initialRotation
                             
@@ -267,8 +304,8 @@ class GameController: NSObject, ObservableObject {
                             // 카메라 각도도 초기 회전값으로 설정
                             self.cameraAngle = initialRot.y
                             
-                print("Turtle initial position: \(turtleNode.position)")
-                print("Turtle initial rotation: \(turtleNode.eulerAngles)")
+                            print("Turtle initial position: \(turtleNode.position)")
+                            print("Turtle initial rotation: \(turtleNode.eulerAngles)")
                         }
                     } catch {
                         print("Error loading initial position and rotation: \(error.localizedDescription)")
@@ -331,7 +368,7 @@ class GameController: NSObject, ObservableObject {
                 let decoder = JSONDecoder()
                 let dialogueData = try decoder.decode(DialogueData.self, from: data)
                 
-                if let dayData = dialogueData.days["day\(currentDay)"] {
+                if let dayData = dialogueData.days["day\(challenge?.day ?? 1)"] {
                     let initialPos = dayData.r_initialPosition
                     let initialRot = dayData.initialRotation
                     let rabbitPose = dayData.rabbit_pose
@@ -849,39 +886,42 @@ class GameController: NSObject, ObservableObject {
     }
 
     private func loadBonePositions() {
+        // 기존 bone들을 모두 제거
+        scene.rootNode.childNodes.forEach { node in
+            if node.name?.starts(with: "bone_") == true {
+                node.removeFromParentNode()
+            }
+        }
+        
         if let boneUrl = Bundle.main.url(forResource: "bone", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: boneUrl)
                 let decoder = JSONDecoder()
                 let boneData = try decoder.decode(BoneData.self, from: data)
                 
-                bonePositions = boneData.bones.map { pos in
-                    SCNVector3(pos.x, pos.y, pos.z)
-                }
-                print("Bone positions loaded: \(bonePositions.count)")
-                
-                // 뼈 모델 로드 및 배치
+                // 뼈 모델 로드
                 if let bonePath = Bundle.main.path(forResource: "3d_bone", ofType: "usdc") {
                     let boneModelUrl = URL(fileURLWithPath: bonePath)
                     print("Found bone.usdc at: \(boneModelUrl)")
+                    
                     do {
                         let boneScene = try SCNScene(url: boneModelUrl, options: nil)
                         print("Successfully loaded bone scene")
                         
                         // 각 위치에 뼈 모델 배치
-                        for (index, position) in bonePositions.enumerated() {
+                        for (index, position) in boneData.bones.enumerated() {
                             // 각 위치마다 새로운 뼈 노드 생성
                             let boneNode = boneScene.rootNode.clone()
                             
                             // 지형 높이 확인
-                            let terrainHeight = getGroundHeight(at: position)
+                            let terrainHeight = getGroundHeight(at: SCNVector3(position.x, 0, position.z))
                             
                             // bone의 y값이 지형보다 낮으면 지형 높이에 맞춤
                             let adjustedY = max(position.y, terrainHeight)
                             
                             boneNode.position = SCNVector3(position.x, adjustedY, position.z)
-                            boneNode.scale = SCNVector3(0.15, 0.15, 0.15)  // 크기를 2.0으로 설정
-                            boneNode.eulerAngles = SCNVector3(-Float.pi/2, 0, 0)  // 회전 조정
+                            boneNode.scale = SCNVector3(0.15, 0.15, 0.15)
+                            boneNode.eulerAngles = SCNVector3(-Float.pi/2, 0, 0)
                             
                             // 뼈 노드에 물리 바디 추가
                             boneNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
@@ -896,8 +936,8 @@ class GameController: NSObject, ObservableObject {
                         }
                         
                         // 뼈 위치 디버그 출력
-                        print("Total bone positions: \(bonePositions.count)")
-                        for (index, position) in bonePositions.enumerated() {
+                        print("Total bones created: \(boneData.bones.count)")
+                        for (index, position) in boneData.bones.enumerated() {
                             print("Bone \(index + 1): x=\(position.x), y=\(position.y), z=\(position.z)")
                         }
                     } catch {
@@ -905,7 +945,6 @@ class GameController: NSObject, ObservableObject {
                     }
                 } else {
                     print("Could not find bone.usdc in bundle")
-                    // 번들 내 모든 리소스 출력
                     let resourcePaths = Bundle.main.paths(forResourcesOfType: "usdc", inDirectory: nil)
                     print("Available .usdc files in bundle: \(resourcePaths)")
                 }
@@ -1080,7 +1119,8 @@ class GameController: NSObject, ObservableObject {
         print("Current player position: \(player.position)")
         
         // standing 모델 로드
-        if let standingPath = Bundle.main.path(forResource: "3d_officer_tutle_standing", ofType: "usdz") {
+        let standingModelName = challenge?.day == 4 ? "3d_officer_tutle_cho" : "3d_officer_tutle_standing"
+        if let standingPath = Bundle.main.path(forResource: standingModelName, ofType: "usdz") {
             print("Found standing model at path: \(standingPath)")
             let standingUrl = URL(fileURLWithPath: standingPath)
             do {
@@ -1189,6 +1229,29 @@ class GameController: NSObject, ObservableObject {
             print("Available .usdz files: \(resourcePaths)")
         }
     }
+
+    func cleanup() {
+        print("🧹 Cleaning up GameController")
+        // 모든 노드 제거
+        scene.rootNode.childNodes.forEach { node in
+            node.removeFromParentNode()
+        }
+        // 참조 정리
+        playerNode = nil
+        rabbitNode = nil
+        cameraNode = nil
+        // 사운드 정리
+        jumpSound?.stop()
+        jumpSound = nil
+        // 타이머 정리
+        animationTimer?.invalidate()
+        animationTimer = nil
+    }
+
+    deinit {
+        print("🗑 GameController is being deallocated")
+        cleanup()
+    }
 }
 
 class SceneViewDelegate: NSObject, SCNSceneRendererDelegate {
@@ -1206,7 +1269,6 @@ class SceneViewDelegate: NSObject, SCNSceneRendererDelegate {
 struct GameView: View {
     @ObservedObject private var gameController: GameController
     private let sceneDelegate: SceneViewDelegate
-    @State private var currentDay: Int = 1
     @State private var currentMessageIndex: Int = 0
     @State private var messages: [Message] = []
     @State private var currentImage: String = "emoji_computering"
@@ -1215,11 +1277,14 @@ struct GameView: View {
     @State private var lastDragValue: CGFloat = 0
     
     @Query var challenges: [Challenge]   // ← 저장된 Challenge 배열을 자동으로 가져옴
-
+    
     @Environment(\.presentationMode) var presentationMode
+    //스위프트 데이터 사용하기
+    @Environment(\.modelContext) private var modelContext
+
     
     init() {
-        let controller = GameController(currentDay: 1)  // currentDay 전달
+        let controller = GameController()  // challenge는 nil로 초기화
         self.gameController = controller
         self.sceneDelegate = SceneViewDelegate(gameController: controller)
         self.currentImage = "emoji_computering"
@@ -1321,12 +1386,12 @@ struct GameView: View {
                         }
                         .frame(width: UIScreen.main.bounds.width * 0.95)
                         
-                        .onAppear {
-                            loadMessages(for: currentDay)
-                        }
+//                        .onAppear {
+//                            loadMessages(for: challenge?.day ?? 1)
+//                        }
                         .onDisappear {
-                            // 화면이 사라질 때 타이머 정리
-                            //stopMoveTimer()
+                            print("👋 GameView is disappearing")
+                            gameController.cleanup()
                         }
                         
                     }
@@ -1338,6 +1403,17 @@ struct GameView: View {
         .navigationDestination(isPresented: $showStretchingView) {
             StretchingView()
                 .navigationTitle("척추의 길")
+                .onAppear {
+                            if let first = challenges.first {
+                                first.day += 1
+                                do {
+                                    try modelContext.save()
+                                    print("✅ 저장 성공")
+                                } catch {
+                                    print("❌ 저장 실패: \(error)")
+                                }
+                            }
+                        }
         }
         //.navigationBarHidden(true)   // 이거 추가!
         .onAppear {
@@ -1346,22 +1422,31 @@ struct GameView: View {
                     firstChallenge.day = 1
                 }
                 challenge = firstChallenge
+                gameController.challenge = firstChallenge  // GameController의 challenge 업데이트
+                gameController.updateScene()  // challenge가 설정된 후 scene 업데이트
             } else {
                 // 저장된 챌린지가 없으면 기본 챌린지 생성
-                let newChallenge = Challenge(title: "척추의 길", day: currentDay, startDate: Date(), isTodayDone: false)
+                let newChallenge = Challenge(title: "척추의 길", day: 1, startDate: Date(), isTodayDone: false)
+                modelContext.insert(newChallenge)
                 challenge = newChallenge
-                    
-                    
+                gameController.challenge = newChallenge  // GameController의 challenge 업데이트
+                gameController.updateScene()  // challenge가 설정된 후 scene 업데이트
             }
         }
+        .onChange(of: challenge) {
+            if let challenge = challenge {
+                loadMessages(for: challenge.day)
+            }
+        }
+
         // 코드 추가하고 currentday = 1에서 다른 날로 바꾸면 멘트 바뀜 (?일차는 위 Cheallenge(day: ?) 여기 숫자 바꾸면 됨)
-        .onChange (of: challenges) { newChallenges in
-            // challenges가 바뀔 때마다 자동으로 반영
-            if let firstChallenge = newChallenges.first {
-                challenge = firstChallenge
-            }
-            
-        }
+//        .onChange (of: challenges) { newChallenges in
+//            // challenges가 바뀔 때마다 자동으로 반영
+//            if let firstChallenge = newChallenges.first {
+//                challenge = firstChallenge
+//            }
+//            
+//        }
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
